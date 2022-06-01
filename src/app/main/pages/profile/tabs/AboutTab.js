@@ -14,10 +14,11 @@ import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-function AboutTab() {
+function AboutTab(props) {
+  const user = useSelector(({ auth }) => auth.user);
   const [data, setData] = useState(null);
-  const test = (x) => x + 1;
 
   useEffect(() => {
     axios.get('/api/profile/about').then((res) => {
@@ -64,20 +65,22 @@ function AboutTab() {
             <CardContent>
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">Gender</Typography>
-                <Typography>{general.gender}</Typography>
+                <Typography>{props.user.data.gender ? props.user.data.gender : ''}</Typography>
               </div>
 
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">Birthday</Typography>
-                <Typography>{general.birthday}</Typography>
+                <Typography>
+                  {props.user.data.dateOfBirth ? props.user.data.dateOfBirth : ''}
+                </Typography>
               </div>
 
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">Locations</Typography>
 
-                {general.locations.map((location) => (
-                  <div className="flex items-center" key={location}>
-                    <Typography>{location}</Typography>
+                {user.countries.map((country) => (
+                  <div className="flex items-center" key={country.id}>
+                    <Typography>{country.name}</Typography>
                     <Icon className="text-16 mx-4" color="action">
                       location_on
                     </Icon>
@@ -87,7 +90,7 @@ function AboutTab() {
 
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">About Me</Typography>
-                <Typography>{general.about}</Typography>
+                <Typography>{props.user.data.aboutMe ? props.user.data.aboutMe : ''}</Typography>
               </div>
             </CardContent>
           </Card>
@@ -108,12 +111,14 @@ function AboutTab() {
             <CardContent>
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">Occupation</Typography>
-                <Typography>{work.occupation}</Typography>
+                <Typography>
+                  {props.user.data.occupation ? props.user.data.occupation : ''}
+                </Typography>
               </div>
 
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">Skills</Typography>
-                <Typography>{work.skills}</Typography>
+                <Typography>{props.user.data.skills ? props.user.data.skills : ''}</Typography>
               </div>
 
               <div className="mb-24">
@@ -152,7 +157,7 @@ function AboutTab() {
             <CardContent>
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">Address</Typography>
-                <Typography>{contact.address}</Typography>
+                <Typography>{props.user.data.address ? props.user.data.address : ''}</Typography>
               </div>
 
               <div className="mb-24">
@@ -188,7 +193,7 @@ function AboutTab() {
           </Card>
         </div>
 
-        <div className="flex flex-col md:w-320">
+        {/* <div className="flex flex-col md:w-320">
           <Card component={motion.div} variants={item} className="w-full mb-32 rounded-16 shadow">
             <AppBar position="static" elevation={0}>
               <Toolbar className="px-8">
@@ -262,7 +267,7 @@ function AboutTab() {
               </List>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </div>
     </motion.div>
   );

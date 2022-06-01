@@ -7,7 +7,6 @@ import SettingsPanel from 'app/fuse-layouts/shared-components/SettingsPanel';
 import { memo, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
-import FooterLayout1 from './components/FooterLayout1';
 import LeftSideLayout1 from './components/LeftSideLayout1';
 import NavbarWrapperLayout1 from './components/NavbarWrapperLayout1';
 import RightSideLayout1 from './components/RightSideLayout1';
@@ -57,10 +56,6 @@ function Layout1(props) {
 
             {props.children}
           </div>
-
-          {/* {config.footer.display && (
-            <FooterLayout1 className={config.footer.style === 'fixed' && 'sticky bottom-0'} />
-          )} */}
         </main>
 
         {config.navbar.display && config.navbar.position === 'right' && <NavbarWrapperLayout1 />}

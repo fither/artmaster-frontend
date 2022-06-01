@@ -2,12 +2,13 @@ import FuseUtils from '@fuse/utils';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import withRouter from '@fuse/core/withRouter';
 import { useDeepCompareEffect } from '@fuse/hooks';
+import { WebSocketContext } from 'app/ws/WebSocket';
 import { getMails, selectMails } from '../store/mailsSlice';
 import MailListItem from './MailListItem';
 
@@ -19,9 +20,11 @@ function MailList(props) {
   const routeParams = useParams();
   const [filteredData, setFilteredData] = useState(null);
   const { t } = useTranslation('mailApp');
+  const ws = useContext(WebSocketContext);
 
   useDeepCompareEffect(() => {
     dispatch(getMails(routeParams));
+    ws.sendMessage('mail/findAll');
   }, [dispatch, routeParams]);
 
   useEffect(() => {

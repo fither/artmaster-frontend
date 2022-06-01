@@ -10,7 +10,10 @@ const usersSlice = createSlice({
   name: 'usersApp/users',
   initialState: usersAdapter.getInitialState({
     searchText: '',
+    loading: false,
     routeParams: {},
+    externalUser: null,
+    externalUserLoading: false,
     userDialog: {
       type: 'new',
       props: {
@@ -26,7 +29,10 @@ const usersSlice = createSlice({
       },
       prepare: (event) => ({ payload: event.target.value || '' }),
     },
-    setUsers: (state, users) => usersAdapter.setAll(state, users),
+    setUsers: (state, users) => {
+      usersAdapter.setAll(state, users);
+      state.loading = false;
+    },
     openNewUserDialog: (state, action) => {
       state.userDialog = {
         type: 'new',
@@ -63,6 +69,15 @@ const usersSlice = createSlice({
         data: null,
       };
     },
+    setExternalUser: (state, action) => {
+      state.externalUser = action.payload;
+    },
+    setUsersLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setExternalUserLoading: (state, action) => {
+      state.externalUserLoading = action.payload;
+    },
   },
   extraReducers: {},
 });
@@ -74,6 +89,9 @@ export const {
   closeNewUserDialog,
   openEditUserDialog,
   closeEditUserDialog,
+  setUsersLoading,
+  setExternalUser,
+  setExternalUserLoading,
 } = usersSlice.actions;
 
 export default usersSlice.reducer;

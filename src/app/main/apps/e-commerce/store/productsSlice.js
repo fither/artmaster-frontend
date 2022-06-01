@@ -9,7 +9,7 @@ const productsSlice = createSlice({
   name: 'eCommerceApp/products',
   initialState: productsAdapter.getInitialState({
     searchText: '',
-    loading: true,
+    loading: false,
   }),
   reducers: {
     setProductsSearchText: {
@@ -22,10 +22,13 @@ const productsSlice = createSlice({
       productsAdapter.setAll(state, action.payload);
       state.loading = false;
     },
+    setProductsLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   },
   extraReducers: {},
 });
 
-export const { setProductsSearchText, setProducts } = productsSlice.actions;
+export const { setProductsSearchText, setProducts, setProductsLoading } = productsSlice.actions;
 
 export default productsSlice.reducer;

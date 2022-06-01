@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import withRouter from '@fuse/core/withRouter';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { WebSocketContext } from 'app/ws/WebSocket';
-import { selectOrders } from '../store/ordersSlice';
+import { selectOrders, setOrdersLoading } from '../store/ordersSlice';
 import OrdersTableHead from './OrdersTableHead';
 import OrderDialog from './OrderDialog';
 import { selectAssignments } from '../store/assignmentsSlice';
@@ -36,8 +36,12 @@ function OrdersTable(props) {
   });
 
   useEffect(() => {
-    ws.sendMessage('order/findAll', selectedCountry);
+    if (!loading) {
+      dispatch(setOrdersLoading(true));
+      ws.sendMessage('order/findAll', selectedCountry);
+    }
     ws.sendMessage('assignment/findAll');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, selectedCountry, ws]);
 
   useEffect(() => {

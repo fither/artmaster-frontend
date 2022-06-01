@@ -74,8 +74,10 @@ const MailListItem = (props) => {
         <Typography className="font-medium">{props.mail.from.name}</Typography>
 
         <div className="flex flex-col py-4">
-          <Typography className="truncate text-14 pb-2">{props.mail.subject}</Typography>
-          <Typography color="textSecondary" className="truncate">
+          <Typography className="truncate text-14 pb-2" style={{ maxWidth: 'initial' }}>
+            {props.mail.subject}
+          </Typography>
+          <Typography color="textSecondary" className="truncate" style={{ maxWidth: 'initial' }}>
             {_.truncate(props.mail.message.replace(/<(?:.|\n)*?>/gm, ''), { length: 180 })}
           </Typography>
         </div>

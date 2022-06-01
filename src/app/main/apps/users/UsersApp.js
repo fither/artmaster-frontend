@@ -1,11 +1,7 @@
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import withReducer from 'app/store/withReducer';
-import { useContext, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { useDeepCompareEffect } from '@fuse/hooks';
+import { useRef } from 'react';
 import { styled } from '@mui/material/styles';
-import { WebSocketContext } from 'app/ws/WebSocket';
 import UsersDialog from './UserDialog';
 import UsersHeader from './UsersHeader';
 import UsersList from './UsersList';
@@ -43,15 +39,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 }));
 
 function UsersApp(props) {
-  const dispatch = useDispatch();
-  const ws = useContext(WebSocketContext);
-
   const pageLayout = useRef(null);
-  const routeParams = useParams();
-
-  useDeepCompareEffect(() => {
-    ws.sendMessage('user/findAll');
-  }, [dispatch, routeParams]);
 
   // TODO: superuser != -> disable sidebar
 

@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { useMemo, useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { WebSocketContext } from 'app/ws/WebSocket';
+import { useNavigate } from 'react-router-dom';
 import ContactsTable from './ContactsTable';
 import { selectContacts } from './store/contactsSlice';
 
@@ -16,6 +17,7 @@ function ContactsList(props) {
   const searchText = useSelector(({ contactsApp }) => contactsApp.contacts.searchText);
   const user = useSelector(({ auth }) => auth.user);
   const ws = useContext(WebSocketContext);
+  const navigate = useNavigate();
 
   const [filteredData, setFilteredData] = useState(null);
 
@@ -95,6 +97,11 @@ function ContactsList(props) {
     [user.starred, ws]
   );
 
+  const handleRowClick = (ev, row) => {
+    ev.preventDefault();
+    navigate(`/pages/profile/${row.original.id}`);
+  };
+
   useEffect(() => {
     function getFilteredArray(entities, _searchText) {
       if (_searchText.length === 0) {
@@ -128,7 +135,7 @@ function ContactsList(props) {
       animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
       className="flex flex-auto w-full max-h-full"
     >
-      <ContactsTable columns={columns} data={filteredData} />
+      <ContactsTable onRowClick={handleRowClick} columns={columns} data={filteredData} />
     </motion.div>
   );
 }

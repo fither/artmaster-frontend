@@ -6,10 +6,17 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { WebSocketContext } from 'app/ws/WebSocket';
+import { setExternalUserLoading } from 'app/main/apps/users/store/usersSlice';
+import FuseLoading from '@fuse/core/FuseLoading';
+import { setSelectedContactId } from 'app/main/apps/chat/store/contactsSlice';
 import AboutTab from './tabs/AboutTab';
 import PhotosVideosTab from './tabs/PhotosVideosTab';
+import ProfileUpdateDialog from './ProfileUpdateDialog';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-topBg': {
@@ -53,9 +60,57 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
 function ProfilePage() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+
+  const user = useSelector(({ auth }) => auth.user);
+  const params = useParams();
+
+  const [userData, setUserData] = useState(null);
+  const [isExternalUser, setIsExternalUser] = useState(false);
+  const externalUserLoading = useSelector(({ usersApp }) => usersApp.users.externalUserLoading);
+  const externalUser = useSelector(({ usersApp }) => usersApp.users.externalUser);
+  const ws = useContext(WebSocketContext);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleTabChange(event, value) {
     setSelectedTab(value);
+  }
+
+  function handleOnClick(ev) {
+    ev.preventDefault();
+    const userId = externalUser ? externalUser.id : '';
+    if (userId) {
+      dispatch(setSelectedContactId(userId));
+      navigate('/apps/chat');
+    }
+  }
+
+  const getExternalUser = useCallback(() => {
+    if (!externalUserLoading && !userData) {
+      dispatch(setExternalUserLoading(true));
+      ws.sendMessage('user/findOne', params.userId);
+    } else if (externalUserLoading && !userData && !!externalUser) {
+      setUserData(externalUser);
+      dispatch(setExternalUserLoading(false));
+    }
+  }, [dispatch, externalUser, externalUserLoading, params.userId, userData, ws]);
+
+  useEffect(() => {
+    if (!params.userId) {
+      setUserData(user);
+    } else {
+      setIsExternalUser(true);
+      getExternalUser();
+    }
+  }, [getExternalUser, params, user]);
+
+  if (isExternalUser && externalUserLoading) {
+    return <FuseLoading />;
+  }
+
+  if (!userData || !userData.data) {
+    return null;
   }
 
   return (
@@ -72,7 +127,7 @@ function ProfilePage() {
                   borderColor: 'background.default',
                 }}
                 className="-mt-64  w-128 h-128"
-                src="assets/images/avatars/Velazquez.jpg"
+                src={userData.data.photoURL}
               />
             </motion.div>
             <div className="flex flex-col md:flex-row flex-1 items-center justify-between p-8">
@@ -85,17 +140,32 @@ function ProfilePage() {
                   variant="h4"
                   color="inherit"
                 >
-                  John Doe
+                  {`${userData.firstName} ${userData.lastName}`}
                 </Typography>
               </motion.div>
 
               <div className="flex items-center justify-end -mx-4 mt-24 md:mt-0">
-                <Button className="mx-8" variant="contained" color="secondary" aria-label="Follow">
-                  Follow
-                </Button>
-                <Button variant="contained" color="primary" aria-label="Send Message">
-                  Send Message
-                </Button>
+                {!params.userId && (
+                  <Button
+                    className="mx-8"
+                    variant="contained"
+                    color="secondary"
+                    aria-label="Edit Profile"
+                    onClick={(ev) => setProfileDialogOpen(true)}
+                  >
+                    Edit Profile
+                  </Button>
+                )}
+                {!!params.userId && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    aria-label="Send Message"
+                    onClick={handleOnClick}
+                  >
+                    Send Message
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -128,11 +198,15 @@ function ProfilePage() {
               label="Photos & Videos"
             />
           </Tabs>
+          <ProfileUpdateDialog
+            open={profileDialogOpen}
+            onClose={(ev) => setProfileDialogOpen(false)}
+          />
         </>
       }
       content={
         <div className="p-16 sm:p-24">
-          {selectedTab === 0 && <AboutTab />}
+          {selectedTab === 0 && <AboutTab user={userData} />}
           {selectedTab === 1 && <PhotosVideosTab />}
         </div>
       }

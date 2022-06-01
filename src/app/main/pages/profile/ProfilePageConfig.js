@@ -10,6 +10,10 @@ const ProfilePageConfig = {
   },
   routes: [
     {
+      path: 'pages/profile/:userId',
+      element: <ProfilePage />,
+    },
+    {
       path: 'pages/profile',
       element: <ProfilePage />,
     },

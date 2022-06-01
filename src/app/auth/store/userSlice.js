@@ -7,7 +7,7 @@ import settingsConfig from 'app/fuse-configs/settingsConfig';
 
 export const updateUserDataNew = (data) => (dispatch, getState) => {
   const oldUser = getState().auth.user;
-  const newUser = _.merge({}, oldUser, { data: { ...data } });
+  const newUser = _.merge({}, oldUser, { data: { ...data }, authCompleted: true });
   dispatch(setUser(newUser));
 };
 
@@ -21,6 +21,7 @@ export const setUserData = (user) => async (dispatch, getState) => {
   const newUser = {
     from: 'custom-db',
     ...user,
+    authCompleted: true,
   };
 
   dispatch(setDefaultSettings(newUser.data.settings));
@@ -53,7 +54,8 @@ export const logoutUser = () => async (dispatch, getState) => {
 
   window.localStorage.removeItem('jwt_access_token');
 
-  return dispatch(userLoggedOut());
+  dispatch(userLoggedOut());
+  return dispatch(setAuthCompleted(true));
 };
 
 export const updateUserData = (user, ws) => {
@@ -61,6 +63,7 @@ export const updateUserData = (user, ws) => {
 };
 
 const initialState = {
+  authCompleted: false,
   role: [], // guest
   data: {
     displayName: 'John Doe',
@@ -76,10 +79,13 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => action.payload,
     userLoggedOut: (state, action) => initialState,
+    setAuthCompleted: (state, action) => {
+      state.authCompleted = action.payload;
+    },
   },
   extraReducers: {},
 });
 
-export const { setUser, userLoggedOut } = userSlice.actions;
+export const { setUser, userLoggedOut, setAuthCompleted } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -6,19 +6,10 @@ import { hideMessage, showMessage } from 'app/store/fuse/messageSlice';
 
 import { setUserData, logoutUser } from './store/userSlice';
 
+// eslint-disable-next-line react/prefer-stateless-function
 class Auth extends Component {
-  state = {
-    waitAuthCheck: true,
-  };
-
-  componentDidMount() {
-    return Promise.all([]).then(() => {
-      this.setState({ waitAuthCheck: false });
-    });
-  }
-
   render() {
-    return this.state.waitAuthCheck ? <FuseSplashScreen /> : <>{this.props.children}</>;
+    return !this.props.authCompleted ? <FuseSplashScreen /> : <>{this.props.children}</>;
   }
 }
 
@@ -34,4 +25,10 @@ function mapDispatchToProps(dispatch) {
   );
 }
 
-export default connect(null, mapDispatchToProps)(Auth);
+function mapStateToProps(state) {
+  return {
+    authCompleted: state.auth.user.authCompleted,
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

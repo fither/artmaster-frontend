@@ -11,6 +11,7 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import clsx from 'clsx';
+import { Navigate } from 'react-router-dom';
 import ContactsTablePaginationActions from './ContactsTablePaginationActions';
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
@@ -57,6 +58,10 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
     setPageSize(Number(event.target.value));
   };
 
+  const handleRowClick = (userId) => {
+    Navigate(`/pages/profile/${userId}`);
+  };
+
   // Render the UI for your table
   return (
     <div className="flex flex-col w-full min-h-full sm:border-1 sm:rounded-16 overflow-hidden">
@@ -94,7 +99,11 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
             {page.map((row, i) => {
               prepareRow(row);
               return (
-                <TableRow {...row.getRowProps()} className="truncate cursor-pointer">
+                <TableRow
+                  onClick={(ev) => onRowClick(ev, row)}
+                  {...row.getRowProps()}
+                  className="truncate cursor-pointer"
+                >
                   {row.cells.map((cell) => {
                     return (
                       <TableCell

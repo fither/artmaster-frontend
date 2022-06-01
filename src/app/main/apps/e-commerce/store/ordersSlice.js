@@ -10,7 +10,7 @@ const ordersSlice = createSlice({
   name: 'eCommerceApp/orders',
   initialState: ordersAdapter.getInitialState({
     searchText: '',
-    loading: true,
+    loading: false,
     selectedCountry: '',
     orderDialog: {
       type: 'new',

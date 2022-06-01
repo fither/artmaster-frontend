@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import withRouter from '@fuse/core/withRouter';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { WebSocketContext } from 'app/ws/WebSocket';
-import { selectProducts } from '../store/productsSlice';
+import { selectProducts, setProductsLoading } from '../store/productsSlice';
 import ProductsTableHead from './ProductsTableHead';
 import ProductsTableRow from './ProductsTableRow';
 
@@ -32,7 +32,11 @@ function ProductsTable(props) {
   });
 
   useEffect(() => {
-    ws.sendMessage('product/findAll');
+    if (!loading) {
+      dispatch(setProductsLoading(true));
+      ws.sendMessage('product/findAll');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, ws]);
 
   useEffect(() => {

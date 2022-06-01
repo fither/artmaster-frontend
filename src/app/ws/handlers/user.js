@@ -1,7 +1,7 @@
 import { updateUserDataNew } from 'app/auth/store/userSlice';
 import { addNonContactUser } from 'app/main/apps/contacts/store/contactsSlice';
 import { setFindedUsers } from 'app/main/apps/contacts/store/searchUsersSlice';
-import { setUsers } from 'app/main/apps/users/store/usersSlice';
+import { setExternalUser, setUsers } from 'app/main/apps/users/store/usersSlice';
 import { setDefaultSettings } from 'app/store/fuse/settingsSlice';
 
 const handleUser = ({ eventAction, data, dispatch, ws }) => {
@@ -33,8 +33,14 @@ const handleUser = ({ eventAction, data, dispatch, ws }) => {
     case 'updateUserData':
       dispatch(updateUserDataNew(data));
       break;
+    case 'updateUserInfo':
+      dispatch(updateUserDataNew(data));
+      break;
     case 'whois':
       dispatch(addNonContactUser(data));
+      break;
+    case 'findOne':
+      dispatch(setExternalUser(data));
       break;
     default:
       break;

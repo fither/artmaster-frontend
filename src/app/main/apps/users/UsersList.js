@@ -15,13 +15,15 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { WebSocketContext } from 'app/ws/WebSocket';
+import FuseLoading from '@fuse/core/FuseLoading';
 import UsersTable from './UsersTable';
-import { openEditUserDialog, selectUsers } from './store/usersSlice';
+import { openEditUserDialog, selectUsers, setUsersLoading } from './store/usersSlice';
 
 function UsersList(props) {
   const dispatch = useDispatch();
   const users = useSelector(selectUsers);
   const searchText = useSelector(({ usersApp }) => usersApp.users.searchText);
+  const loading = useSelector(({ usersApp }) => usersApp.users.loading);
   const ws = useContext(WebSocketContext);
   const user = useSelector(({ auth }) => auth.user);
 
@@ -163,11 +165,19 @@ function UsersList(props) {
     }
   }, [users, searchText]);
 
+  useEffect(() => {
+    if (!loading) {
+      dispatch(setUsersLoading(true));
+      ws.sendMessage('user/findAll');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, ws]);
+
   if (!filteredData) {
     return null;
   }
 
-  if (filteredData.length === 0) {
+  if (filteredData.length === 0 && !loading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
         <Typography color="textSecondary" variant="h5">
@@ -175,6 +185,10 @@ function UsersList(props) {
         </Typography>
       </div>
     );
+  }
+
+  if (loading) {
+    return <FuseLoading />;
   }
 
   return (
