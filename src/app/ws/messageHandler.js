@@ -15,6 +15,7 @@ import handleRole from './handlers/role';
 import handleOrder from './handlers/order';
 import handleProduct from './handlers/product';
 import handleAnnouncement from './handlers/announcement';
+import handleMail from './handlers/mail';
 
 const handleMessage = (handlePayload) => {
   switch (handlePayload.eventRoot) {
@@ -65,6 +66,9 @@ const handleMessage = (handlePayload) => {
       break;
     case 'announcement':
       handleAnnouncement(handlePayload);
+      break;
+    case 'mail':
+      handleMail(handlePayload);
       break;
     case 'error':
       handlePayload.dispatch(showMessage({ message: handlePayload.data }));

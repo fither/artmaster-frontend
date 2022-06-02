@@ -58,6 +58,7 @@ export const { selectAll: selectMails, selectById: selectMailById } = mailsAdapt
 const mailsSlice = createSlice({
   name: 'mailApp/mails',
   initialState: mailsAdapter.getInitialState({
+    mail: null,
     searchText: '',
     routeParams: {},
     selectedMailIds: [],
@@ -68,6 +69,12 @@ const mailsSlice = createSlice({
         state.searchText = action.payload;
       },
       prepare: (event) => ({ payload: event.target.value || '' }),
+    },
+    setMail: (state, action) => {
+      state.mail = action.payload;
+    },
+    setMails: (state, action) => {
+      mailsAdapter.setAll(state, action.payload);
     },
     selectAllMails: (state, action) => {
       state.selectedMailIds = state.ids;
@@ -102,6 +109,8 @@ export const {
   deselectAllMails,
   selectMailsByParameter,
   toggleInSelectedMails,
+  setMails,
+  setMail,
 } = mailsSlice.actions;
 
 export default mailsSlice.reducer;

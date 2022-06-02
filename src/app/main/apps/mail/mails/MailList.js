@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import withRouter from '@fuse/core/withRouter';
 import { useDeepCompareEffect } from '@fuse/hooks';
 import { WebSocketContext } from 'app/ws/WebSocket';
-import { getMails, selectMails } from '../store/mailsSlice';
+import { selectMails } from '../store/mailsSlice';
 import MailListItem from './MailListItem';
 
 function MailList(props) {
@@ -23,9 +23,8 @@ function MailList(props) {
   const ws = useContext(WebSocketContext);
 
   useDeepCompareEffect(() => {
-    dispatch(getMails(routeParams));
     ws.sendMessage('mail/findAll');
-  }, [dispatch, routeParams]);
+  }, [dispatch]);
 
   useEffect(() => {
     function getFilteredArray() {

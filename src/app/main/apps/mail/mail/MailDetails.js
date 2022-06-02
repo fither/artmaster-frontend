@@ -13,17 +13,23 @@ import { useDeepCompareEffect } from '@fuse/hooks';
 import MailChip from '../MailChip';
 import { selectLabelsEntities } from '../store/labelsSlice';
 import { getMail } from '../store/mailSlice';
+import { selectMailById, selectMails, setMail } from '../store/mailsSlice';
 
 function MailDetails(props) {
   const dispatch = useDispatch();
-  const mail = useSelector(({ mailApp }) => mailApp.mail);
+  const mails = useSelector(selectMails);
+  const mail = useSelector(({ mailApp }) => mailApp.mails.mail);
   const labels = useSelector(selectLabelsEntities);
 
   const routeParams = useParams();
   const [showDetails, setShowDetails] = useState(false);
 
   useDeepCompareEffect(() => {
-    dispatch(getMail(routeParams));
+    const findedMailId = routeParams.mailId;
+    const findedMail = mails.find((m) => m.id === findedMailId);
+    if (findedMail) {
+      dispatch(setMail(findedMail));
+    }
   }, [dispatch, routeParams]);
 
   if (!mail) {
@@ -78,7 +84,7 @@ function MailDetails(props) {
                 className="flex items-center justify-start"
               >
                 <div>to</div>
-                <div className="mx-4">{mail.to[0].name}</div>
+                <div className="mx-4">{mail.to.name}</div>
               </Typography>
             </div>
           </div>
@@ -108,7 +114,7 @@ function MailDetails(props) {
 
               <Typography variant="body2" color="textSecondary" className="px-4 flex flex-col">
                 <span>{mail.from.email}</span>
-                <span>{mail.to[0].email}</span>
+                <span>{mail.to.email}</span>
                 <span>{mail.time}</span>
               </Typography>
             </div>
