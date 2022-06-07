@@ -10,6 +10,7 @@ const locationsSlice = createSlice({
   name: 'locationsApp/locations',
   initialState: locationsAdapter.getInitialState({
     searchText: '',
+    loading: false,
     locationDialog: {
       type: 'new',
       props: { open: false },
@@ -55,6 +56,9 @@ const locationsSlice = createSlice({
         data: null,
       };
     },
+    setLocationsLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   },
 });
 
@@ -68,6 +72,7 @@ export const {
   closeNewLocationDialog,
   openEditLocationDialog,
   closeEditLocationDialog,
+  setLocationsLoading,
 } = locationsSlice.actions;
 
 export default locationsSlice.reducer;

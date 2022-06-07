@@ -1,12 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-export const getLabels = createAsyncThunk('mailApp/labels/getLabels', async () => {
-  const response = await axios.get('/api/mail-app/labels');
-  const data = await response.data;
-
-  return data;
-});
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
 const labelsAdapter = createEntityAdapter({});
 
@@ -18,11 +10,19 @@ export const {
 
 const labelsSlice = createSlice({
   name: 'mailApp/labels',
-  initialState: labelsAdapter.getInitialState(null),
-  reducers: {},
-  extraReducers: {
-    [getLabels.fulfilled]: labelsAdapter.setAll,
+  initialState: labelsAdapter.getInitialState({
+    initialized: false,
+  }),
+  reducers: {
+    setLabels: (state, action) => {
+      labelsAdapter.setAll(state, action.payload);
+    },
+    setLabelsInitialized: (state, action) => {
+      state.initialized = action.payload;
+    },
   },
 });
+
+export const { setLabels, setLabelsInitialized } = labelsSlice.actions;
 
 export default labelsSlice.reducer;

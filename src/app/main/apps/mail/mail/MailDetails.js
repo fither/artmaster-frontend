@@ -5,21 +5,20 @@ import Icon from '@mui/material/Icon';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import withRouter from '@fuse/core/withRouter';
 import { useDeepCompareEffect } from '@fuse/hooks';
 import MailChip from '../MailChip';
-import { selectLabelsEntities } from '../store/labelsSlice';
-import { getMail } from '../store/mailSlice';
-import { selectMailById, selectMails, setMail } from '../store/mailsSlice';
+import { selectLabels } from '../store/labelsSlice';
+import { selectMails, setMail } from '../store/mailsSlice';
 
 function MailDetails(props) {
   const dispatch = useDispatch();
   const mails = useSelector(selectMails);
   const mail = useSelector(({ mailApp }) => mailApp.mails.mail);
-  const labels = useSelector(selectLabelsEntities);
+  const labels = useSelector(selectLabels);
 
   const routeParams = useParams();
   const [showDetails, setShowDetails] = useState(false);
@@ -31,6 +30,14 @@ function MailDetails(props) {
       dispatch(setMail(findedMail));
     }
   }, [dispatch, routeParams]);
+
+  useEffect(() => {
+    if (!mails.length > 0) {
+      setTimeout(() => {
+        props.navigate('/apps/mail/inbox');
+      }, 0);
+    }
+  }, [mails.length, props]);
 
   if (!mail) {
     return null;
@@ -48,14 +55,20 @@ function MailDetails(props) {
 
           {!_.isEmpty(labels) && mail.labels.length > 0 && (
             <div className="flex flex-wrap mt-8 -mx-2">
-              {mail.labels.map((label) => (
-                <MailChip
-                  className="mt-4 mx-2"
-                  title={labels[label].title}
-                  color={labels[label].color}
-                  key={label}
-                />
-              ))}
+              {mail.labels.map((label) => {
+                const findedLabel = labels.find((l) => l.id === label);
+                if (findedLabel) {
+                  return (
+                    <MailChip
+                      className="mx-2 mt-4"
+                      title={findedLabel.title}
+                      color={findedLabel.color}
+                      key={label}
+                    />
+                  );
+                }
+                return <span key={label} />;
+              })}
             </div>
           )}
         </div>

@@ -13,8 +13,7 @@ import MailList from './mails/MailList';
 import MailsToolbar from './mails/MailsToolbar';
 import reducer from './store';
 import { getFilters } from './store/filtersSlice';
-import { getFolders } from './store/foldersSlice';
-import { getLabels } from './store/labelsSlice';
+import { setFolders } from './store/foldersSlice';
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
   '& .FusePageCarded-header': {
@@ -40,8 +39,7 @@ function MailApp(props) {
 
   useEffect(() => {
     dispatch(getFilters());
-    dispatch(getFolders());
-    dispatch(getLabels());
+    dispatch(setFolders());
   }, [dispatch]);
 
   return (

@@ -6,9 +6,10 @@ import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 import withRouter from '@fuse/core/withRouter';
+import { format } from 'date-fns';
 import MailChip from '../MailChip';
 import { toggleInSelectedMails } from '../store/mailsSlice';
-import { selectLabelsEntities } from '../store/labelsSlice';
+import { selectLabels } from '../store/labelsSlice';
 
 const StyledListItem = styled(ListItem)(({ theme, unread, selected }) => ({
   ...(unread && {
@@ -32,7 +33,7 @@ const StyledListItem = styled(ListItem)(({ theme, unread, selected }) => ({
 const MailListItem = (props) => {
   const dispatch = useDispatch();
   const selectedMailIds = useSelector(({ mailApp }) => mailApp.mails.selectedMailIds);
-  const labels = useSelector(selectLabelsEntities);
+  const labels = useSelector(selectLabels);
 
   const checked =
     selectedMailIds.length > 0 && selectedMailIds.find((id) => id === props.mail.id) !== undefined;
@@ -84,20 +85,26 @@ const MailListItem = (props) => {
 
         <div className="flex -mx-2">
           {!_.isEmpty(labels) &&
-            props.mail.labels.map((label) => (
-              <MailChip
-                className="mx-2 mt-4"
-                title={labels[label].title}
-                color={labels[label].color}
-                key={label}
-              />
-            ))}
+            props.mail.labels.map((label) => {
+              const findedLabel = labels.find((l) => l.id === label);
+              if (findedLabel) {
+                return (
+                  <MailChip
+                    className="mx-2 mt-4"
+                    title={findedLabel.title}
+                    color={findedLabel.color}
+                    key={label}
+                  />
+                );
+              }
+              return <span key={label} />;
+            })}
         </div>
       </div>
 
       <div className="px-8">
         <Typography className="text-12" color="textSecondary">
-          {props.mail.time}
+          {props.mail.time ? format(new Date(props.mail.time), 'eee, dd MMMM') : ''}
         </Typography>
       </div>
     </StyledListItem>

@@ -1,9 +1,9 @@
 import Icon from '@mui/material/Icon';
-import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,7 @@ const accounts = {
 
 function MailAppSidebarHeader(props) {
   const [selectedAccount, setSelectedCount] = useState('creapond');
+  const user = useSelector(({ auth }) => auth.user);
   const { t } = useTranslation('mailApp');
 
   function handleAccountChange(ev) {
@@ -49,20 +50,11 @@ function MailAppSidebarHeader(props) {
         <TextField
           className="w-full"
           id="account-selection"
-          select
-          label={selectedAccount}
-          value={selectedAccount}
-          onChange={handleAccountChange}
-          placeholder="Select Account"
+          label="Email"
+          value={user.email}
           margin="normal"
           variant="filled"
-        >
-          {Object.keys(accounts).map((key, value) => (
-            <MenuItem key={key} value={key}>
-              {accounts[key]}
-            </MenuItem>
-          ))}
-        </TextField>
+        />
       </motion.div>
     </div>
   );

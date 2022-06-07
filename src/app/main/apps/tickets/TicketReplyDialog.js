@@ -120,7 +120,7 @@ function TicketReplyDialog(props) {
               type="submit"
               disabled={_.isEmpty(dirtyFields) || !isValid}
             >
-              Reply
+              Send
             </Button>
           </div>
         </DialogActions>

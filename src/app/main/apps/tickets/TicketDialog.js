@@ -165,6 +165,7 @@ function TicketDialog(props) {
                   id="category"
                   error={!!errors.category}
                   helperText={errors?.category?.message}
+                  disabled={ticketDialog.data && ticketDialog.data.status === 'Replied'}
                   variant="outlined"
                   select
                   fullWidth
@@ -196,6 +197,7 @@ function TicketDialog(props) {
                   id="title"
                   error={!!errors.title}
                   helperText={errors?.title?.message}
+                  disabled={ticketDialog.data && ticketDialog.data.status === 'Replied'}
                   variant="outlined"
                   type="text"
                   fullWidth
@@ -219,6 +221,7 @@ function TicketDialog(props) {
                   id="message"
                   error={!!errors.message}
                   helperText={errors?.message?.message}
+                  disabled={ticketDialog.data && ticketDialog.data.status === 'Replied'}
                   variant="outlined"
                   type="text"
                   fullWidth
@@ -228,6 +231,26 @@ function TicketDialog(props) {
               )}
             />
           </div>
+
+          {ticketDialog &&
+            ticketDialog.data &&
+            (user.id !== ticketDialog.data.userId || ticketDialog.data.status === 'Replied') && (
+              <div className="flex">
+                <div className="min-w-48 pt-20">
+                  <Icon color="action">message</Icon>
+                </div>
+                <TextField
+                  className="mb-24"
+                  label={ticketDialog.data ? `${ticketDialog.data.replier} replied` : ''}
+                  disabled
+                  value={ticketDialog.data ? ticketDialog.data.reply : ''}
+                  variant="outlined"
+                  fullWidth
+                  multiline
+                  minRows={4}
+                />
+              </div>
+            )}
         </DialogContent>
 
         {ticketDialog.type === 'new' ? (
@@ -246,14 +269,20 @@ function TicketDialog(props) {
         ) : (
           <DialogActions className="justify-between p-4 pb-16">
             <div className="px-16">
-              <Button
-                variant="contained"
-                color="secondary"
-                type="submit"
-                disabled={_.isEmpty(dirtyFields) || !isValid}
-              >
-                Save
-              </Button>
+              {ticketDialog && ticketDialog.data && user.id === ticketDialog.data.userId && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  type="submit"
+                  disabled={
+                    _.isEmpty(dirtyFields) ||
+                    !isValid ||
+                    (ticketDialog.data && ticketDialog.data.status === 'Replied')
+                  }
+                >
+                  Save
+                </Button>
+              )}
               {ticketDialog && ticketDialog.data && user.id !== ticketDialog.data.userId && (
                 <Button
                   variant="contained"

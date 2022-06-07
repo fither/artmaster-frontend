@@ -14,6 +14,7 @@ import {
   deselectAllMails,
   selectAllMails,
   selectMails,
+  setMailsShouldRefresh,
 } from '../store/mailsSlice';
 
 function MailToolbar(props) {
@@ -139,6 +140,16 @@ function MailToolbar(props) {
           Unimportant
         </MenuItem>
       </Menu>
+
+      <div className="border-r-1 h-48 w-1 mx-12 my-0" />
+
+      <IconButton
+        onClick={(ev) => dispatch(setMailsShouldRefresh(true))}
+        aria-label="Refresh"
+        size="large"
+      >
+        <Icon>refresh</Icon>
+      </IconButton>
 
       {selectedMailIds.length > 0 && (
         <>

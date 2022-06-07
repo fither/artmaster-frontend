@@ -1,13 +1,15 @@
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import withReducer from 'app/store/withReducer';
-import { useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useContext, useEffect, useRef } from 'react';
 import { styled } from '@mui/material/styles';
+import { WebSocketContext } from 'app/ws/WebSocket';
+import { useSelector } from 'react-redux';
 import LocationsDialog from './LocationDialog';
 import LocationsHeader from './LocationsHeader';
 import LocationsList from './LocationsList';
 import LocationsSidebarContent from './LocationsSidebarContent';
 import reducer from './store';
+import { setLocationsLoading } from './store/locationsSlice';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -40,9 +42,16 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 }));
 
 function LocationsApp(props) {
-  const dispatch = useDispatch();
-
   const pageLayout = useRef(null);
+  const ws = useContext(WebSocketContext);
+  const loading = useSelector(({ locationsApp }) => locationsApp.locations.loading);
+
+  useEffect(() => {
+    if (!loading) {
+      setLocationsLoading(true);
+      ws.sendMessage('location/findAll');
+    }
+  }, [loading, ws]);
 
   return (
     <>

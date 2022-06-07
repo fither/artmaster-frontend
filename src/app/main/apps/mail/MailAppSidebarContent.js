@@ -116,7 +116,8 @@ function MailAppSidebarContent(props) {
               <StyledListItem
                 button
                 component={NavLinkAdapter}
-                to={`/apps/mail/label/${label.handle}`}
+                // to={`/apps/mail/label/${label.handle}`}
+                to={`/apps/mail/${label.handle}`}
                 key={label.id}
               >
                 <Icon className="list-item-icon" style={{ color: label.color }} color="action">

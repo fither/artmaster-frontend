@@ -7,24 +7,69 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import withRouter from '@fuse/core/withRouter';
-import { useDeepCompareEffect } from '@fuse/hooks';
 import { WebSocketContext } from 'app/ws/WebSocket';
-import { selectMails } from '../store/mailsSlice';
+import FuseLoading from '@fuse/core/FuseLoading';
+import {
+  selectMails,
+  setMailInitializing,
+  setMailsLoading,
+  setMailsShouldRefresh,
+  setPrevFolderName,
+} from '../store/mailsSlice';
 import MailListItem from './MailListItem';
+import { setLabelsInitialized } from '../store/labelsSlice';
 
 function MailList(props) {
   const dispatch = useDispatch();
   const mails = useSelector(selectMails);
   const searchText = useSelector(({ mailApp }) => mailApp.mails.searchText);
+  const loading = useSelector(({ mailApp }) => mailApp.mails.loading);
+  const shouldRefresh = useSelector(({ mailApp }) => mailApp.mails.shouldRefresh);
+  const mailInitialized = useSelector(({ mailApp }) => mailApp.mails.mailInitialized);
+  const mailInitializing = useSelector(({ mailApp }) => mailApp.mails.mailInitializing);
+  const prevFolderName = useSelector(({ mailApp }) => mailApp.mails.prevFolderName);
+  const labelsInitialzed = useSelector(({ mailApp }) => mailApp.labels.initialized);
 
   const routeParams = useParams();
   const [filteredData, setFilteredData] = useState(null);
   const { t } = useTranslation('mailApp');
   const ws = useContext(WebSocketContext);
 
-  useDeepCompareEffect(() => {
-    ws.sendMessage('mail/findAll');
-  }, [dispatch]);
+  useEffect(() => {
+    const isNavigatedToDifferentFolder = routeParams.folderHandle !== prevFolderName;
+
+    if (isNavigatedToDifferentFolder) {
+      dispatch(setMailsShouldRefresh(true));
+    }
+
+    if (shouldRefresh && !loading && mailInitialized && !mailInitializing) {
+      dispatch(setMailsLoading(true));
+      dispatch(setMailsShouldRefresh(false));
+      ws.sendMessage('mail/findAll', routeParams.folderHandle);
+
+      if (!labelsInitialzed) {
+        ws.sendMessage('mail/findLabels');
+        dispatch(setLabelsInitialized(true));
+      }
+
+      dispatch(setPrevFolderName(routeParams.folderHandle));
+    }
+
+    if (!mailInitialized && !mailInitializing) {
+      dispatch(setMailInitializing(true));
+      ws.sendMessage('mail/initialize');
+    }
+  }, [
+    shouldRefresh,
+    mailInitialized,
+    loading,
+    dispatch,
+    ws,
+    routeParams.folderHandle,
+    mailInitializing,
+    prevFolderName,
+    labelsInitialzed,
+  ]);
 
   useEffect(() => {
     function getFilteredArray() {
@@ -38,6 +83,10 @@ function MailList(props) {
       setFilteredData(getFilteredArray());
     }
   }, [mails, searchText]);
+
+  if (loading) {
+    return <FuseLoading />;
+  }
 
   if (!filteredData) {
     return null;
@@ -72,7 +121,7 @@ function MailList(props) {
 
   return (
     <List className="p-0">
-      <motion.div variants={container} initial="hidden" animate="show" v>
+      <motion.div variants={container} initial="hidden" animate="show">
         {filteredData.map((mail) => (
           <motion.div variants={item} key={mail.id}>
             <MailListItem mail={mail} />

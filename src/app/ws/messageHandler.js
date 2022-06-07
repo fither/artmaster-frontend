@@ -1,4 +1,3 @@
-import { showMessage } from 'app/store/fuse/messageSlice';
 import handleAuth from './handlers/auth';
 import handleUser from './handlers/user';
 import handleEvent from './handlers/event';
@@ -16,6 +15,7 @@ import handleOrder from './handlers/order';
 import handleProduct from './handlers/product';
 import handleAnnouncement from './handlers/announcement';
 import handleMail from './handlers/mail';
+import handleError from './handlers/error';
 
 const handleMessage = (handlePayload) => {
   switch (handlePayload.eventRoot) {
@@ -71,7 +71,7 @@ const handleMessage = (handlePayload) => {
       handleMail(handlePayload);
       break;
     case 'error':
-      handlePayload.dispatch(showMessage({ message: handlePayload.data }));
+      handleError(handlePayload);
       break;
     default:
       break;

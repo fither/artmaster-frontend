@@ -64,7 +64,7 @@ export default ({ children }) => {
     };
 
     socket.onmessage = (e) => {
-      const { event, data } = JSON.parse(e.data);
+      const { event, data, onEvent } = JSON.parse(e.data);
       const eventSplitted = event.split('/');
       const eventRoot = eventSplitted[0];
       const eventAction = eventSplitted[1];
@@ -72,6 +72,7 @@ export default ({ children }) => {
       const handleMessagePayload = {
         eventRoot,
         eventAction,
+        onEvent,
         data,
         dispatch,
         ws,

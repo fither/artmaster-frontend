@@ -57,22 +57,24 @@ class FuseAuthorization extends Component {
         User is guest
         Redirect to Login Page
         */
-    if (!userRole || userRole.length === 0) {
-      navigate({
-        pathname: '/login',
-      });
-      settingsConfig.loginRedirectUrl = pathname;
-    } else {
-      /*
-        User is member
-        User must be on unAuthorized page or just logged in
-        Redirect to dashboard or loginRedirectUrl
-        */
-      navigate({
-        pathname: loginRedirectUrl,
-      });
-      settingsConfig.loginRedirectUrl = this.defaultLoginRedirectUrl;
-    }
+    setTimeout(() => {
+      if (!userRole || userRole.length === 0) {
+        navigate({
+          pathname: '/login',
+        });
+        settingsConfig.loginRedirectUrl = pathname;
+      } else {
+        /*
+          User is member
+          User must be on unAuthorized page or just logged in
+          Redirect to dashboard or loginRedirectUrl
+          */
+        navigate({
+          pathname: loginRedirectUrl,
+        });
+        settingsConfig.loginRedirectUrl = this.defaultLoginRedirectUrl;
+      }
+    }, 0);
   }
 
   render() {

@@ -1,12 +1,42 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
-export const getFolders = createAsyncThunk('mailApp/folders/getFolders', async () => {
-  const response = await axios.get('/api/mail-app/folders');
-  const data = await response.data;
-
-  return data;
-});
+export const folders = [
+  {
+    id: 0,
+    handle: 'INBOX',
+    title: 'Inbox',
+    translate: 'INBOX',
+    icon: 'inbox',
+  },
+  {
+    id: 1,
+    handle: 'SENT',
+    title: 'Sent',
+    translate: 'SENT',
+    icon: 'send',
+  },
+  {
+    id: 2,
+    handle: 'DRAFTS',
+    title: 'Drafts',
+    translate: 'DRAFTS',
+    icon: 'email_open',
+  },
+  {
+    id: 3,
+    handle: 'SPAM',
+    title: 'Spam',
+    translate: 'SPAM',
+    icon: 'error',
+  },
+  {
+    id: 4,
+    handle: 'TRASH',
+    title: 'Trash',
+    translate: 'TRASH',
+    icon: 'delete',
+  },
+];
 
 const foldersAdapter = createEntityAdapter({});
 
@@ -16,10 +46,14 @@ export const { selectAll: selectFolders, selectById: selectFolderById } =
 const foldersSlice = createSlice({
   name: 'mailApp/folders',
   initialState: foldersAdapter.getInitialState({}),
-  reducers: {},
-  extraReducers: {
-    [getFolders.fulfilled]: foldersAdapter.setAll,
+  reducers: {
+    setFolders: (state, action) => {
+      foldersAdapter.setAll(state, folders);
+    },
   },
+  extraReducers: {},
 });
+
+export const { setFolders } = foldersSlice.actions;
 
 export default foldersSlice.reducer;

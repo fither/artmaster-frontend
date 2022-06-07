@@ -27,9 +27,7 @@ const prepareUser = (ws) => {
   ws.sendMessage('message/findAll');
   ws.sendMessage('country/findAll');
   ws.sendMessage('role/findAll');
-  ws.sendMessage('location/findAll');
   ws.sendMessage('label/findAll');
-  ws.sendMessage('mail/initialize');
 };
 
 export default handleAuth;

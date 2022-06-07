@@ -33,7 +33,7 @@ const MailAppConfig = {
     },
     {
       path: 'apps/mail',
-      element: <Navigate to="/apps/mail/inbox" />,
+      element: <Navigate to="/apps/mail/INBOX" />,
     },
   ],
 };

@@ -60,6 +60,11 @@ const mailsSlice = createSlice({
   initialState: mailsAdapter.getInitialState({
     mail: null,
     searchText: '',
+    loading: false,
+    shouldRefresh: true,
+    mailInitialized: false,
+    mailInitializing: false,
+    prevFolderName: '',
     routeParams: {},
     selectedMailIds: [],
   }),
@@ -75,6 +80,21 @@ const mailsSlice = createSlice({
     },
     setMails: (state, action) => {
       mailsAdapter.setAll(state, action.payload);
+    },
+    setMailsLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setMailsShouldRefresh: (state, action) => {
+      state.shouldRefresh = action.payload;
+    },
+    setMailInitialized: (state, action) => {
+      state.mailInitialized = action.payload;
+    },
+    setMailInitializing: (state, action) => {
+      state.mailInitializing = action.payload;
+    },
+    setPrevFolderName: (state, action) => {
+      state.prevFolderName = action.payload;
     },
     selectAllMails: (state, action) => {
       state.selectedMailIds = state.ids;
@@ -111,6 +131,11 @@ export const {
   toggleInSelectedMails,
   setMails,
   setMail,
+  setMailsLoading,
+  setMailsShouldRefresh,
+  setMailInitialized,
+  setMailInitializing,
+  setPrevFolderName,
 } = mailsSlice.actions;
 
 export default mailsSlice.reducer;
