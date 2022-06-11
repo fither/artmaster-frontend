@@ -9,10 +9,12 @@ import { useParams } from 'react-router-dom';
 import withRouter from '@fuse/core/withRouter';
 import { WebSocketContext } from 'app/ws/WebSocket';
 import FuseLoading from '@fuse/core/FuseLoading';
+import { Button } from '@mui/material';
 import {
   selectMails,
   setMailInitializing,
   setMailsLoading,
+  setMailsMoreLoading,
   setMailsShouldRefresh,
   setPrevFolderName,
 } from '../store/mailsSlice';
@@ -24,10 +26,12 @@ function MailList(props) {
   const mails = useSelector(selectMails);
   const searchText = useSelector(({ mailApp }) => mailApp.mails.searchText);
   const loading = useSelector(({ mailApp }) => mailApp.mails.loading);
+  const moreLoading = useSelector(({ mailApp }) => mailApp.mails.moreLoading);
   const shouldRefresh = useSelector(({ mailApp }) => mailApp.mails.shouldRefresh);
   const mailInitialized = useSelector(({ mailApp }) => mailApp.mails.mailInitialized);
   const mailInitializing = useSelector(({ mailApp }) => mailApp.mails.mailInitializing);
   const prevFolderName = useSelector(({ mailApp }) => mailApp.mails.prevFolderName);
+  const nextPageToken = useSelector(({ mailApp }) => mailApp.mails.nextPageToken);
   const labelsInitialzed = useSelector(({ mailApp }) => mailApp.labels.initialized);
 
   const routeParams = useParams();
@@ -84,6 +88,14 @@ function MailList(props) {
     }
   }, [mails, searchText]);
 
+  function handleLoadMore() {
+    dispatch(setMailsMoreLoading(true));
+    ws.sendMessage('mail/loadMore', {
+      labelId: routeParams.folderHandle,
+      nextPageToken,
+    });
+  }
+
   if (loading) {
     return <FuseLoading />;
   }
@@ -128,6 +140,16 @@ function MailList(props) {
           </motion.div>
         ))}
       </motion.div>
+      <Typography variant="h6" align="center">
+        {moreLoading && <FuseLoading />}
+        {!moreLoading && (
+          <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+            <Button variant="outlined" color="inherit" onClick={handleLoadMore}>
+              Load More
+            </Button>
+          </div>
+        )}
+      </Typography>
     </List>
   );
 }

@@ -1,10 +1,12 @@
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { setLabels } from '../../main/apps/mail/store/labelsSlice';
 import {
+  addMails,
   setMailInitialized,
   setMailInitializing,
   setMails,
   setMailsLoading,
+  setMailsMoreLoading,
 } from '../../main/apps/mail/store/mailsSlice';
 
 const handleMail = ({ eventAction, data, dispatch, ws }) => {
@@ -12,6 +14,10 @@ const handleMail = ({ eventAction, data, dispatch, ws }) => {
     case 'findAll':
       dispatch(setMails(data));
       dispatch(setMailsLoading(false));
+      break;
+    case 'loadMore':
+      dispatch(addMails(data));
+      dispatch(setMailsMoreLoading(false));
       break;
     case 'initialize':
       // dispatch(setMailsLoading(true));

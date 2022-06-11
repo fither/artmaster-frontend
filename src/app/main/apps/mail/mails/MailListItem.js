@@ -8,12 +8,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import withRouter from '@fuse/core/withRouter';
 import { format } from 'date-fns';
 import MailChip from '../MailChip';
-import { toggleInSelectedMails } from '../store/mailsSlice';
+import { markMailAsRead, toggleInSelectedMails } from '../store/mailsSlice';
 import { selectLabels } from '../store/labelsSlice';
 
 const StyledListItem = styled(ListItem)(({ theme, unread, selected }) => ({
   ...(unread && {
-    background: 'rgba(0,0,0,0.03)',
+    background: 'rgba(0,0,0,0.1)',
   }),
 
   ...(selected && {
@@ -42,7 +42,10 @@ const MailListItem = (props) => {
     <StyledListItem
       dense
       button
-      onClick={() => props.navigate(`${props.mail.id}`)}
+      onClick={() => {
+        props.navigate(`${props.mail.id}`);
+        dispatch(markMailAsRead(props.mail.id));
+      }}
       selected={checked}
       unread={!props.mail.read ? 1 : 0}
       className="items-start py-20 px-0 md:px-8 relative"
@@ -79,7 +82,7 @@ const MailListItem = (props) => {
             {props.mail.subject}
           </Typography>
           <Typography color="textSecondary" className="truncate" style={{ maxWidth: 'initial' }}>
-            {_.truncate(props.mail.message.replace(/<(?:.|\n)*?>/gm, ''), { length: 180 })}
+            {_.truncate(props.mail.messageText.replace(/<(?:.|\n)*?>/gm, ''), { length: 180 })}
           </Typography>
         </div>
 
@@ -104,7 +107,7 @@ const MailListItem = (props) => {
 
       <div className="px-8">
         <Typography className="text-12" color="textSecondary">
-          {props.mail.time ? format(new Date(props.mail.time), 'eee, dd MMMM') : ''}
+          {props.mail.time ? format(new Date(props.mail.time), 'eee, dd MMMM hh:mm:ss') : ''}
         </Typography>
       </div>
     </StyledListItem>

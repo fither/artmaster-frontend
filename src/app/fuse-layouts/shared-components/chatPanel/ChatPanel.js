@@ -198,7 +198,11 @@ function ChatPanel(props) {
         </AppBar>
         <Paper className="flex flex-1 flex-row min-h-px shadow-0">
           <ContactList className="flex shrink-0" />
-          <Chat className="flex flex-1 z-10" />
+
+          {contacts && contacts.length > 0 && <Chat className="flex flex-1 z-10" />}
+          {(!contacts || contacts.length <= 0) && state && (
+            <Typography variant="subtitle1">No Contacts Found</Typography>
+          )}
         </Paper>
       </div>
     </Root>

@@ -23,6 +23,12 @@ const Root = styled('div')({
 });
 
 function MailAttachment(props) {
+  function handleDelete() {
+    if (props.onDelete) {
+      props.onDelete(props.fileName);
+    }
+  }
+
   return (
     <Root className={props.className}>
       <div className="flex">
@@ -33,7 +39,7 @@ function MailAttachment(props) {
           ({props.size})
         </Typography>
       </div>
-      <IconButton size="large">
+      <IconButton size="large" onClick={handleDelete}>
         <Icon className="text-16">close</Icon>
       </IconButton>
     </Root>

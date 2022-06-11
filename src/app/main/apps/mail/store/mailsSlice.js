@@ -61,9 +61,11 @@ const mailsSlice = createSlice({
     mail: null,
     searchText: '',
     loading: false,
+    moreLoading: false,
     shouldRefresh: true,
     mailInitialized: false,
     mailInitializing: false,
+    nextPageToken: '',
     prevFolderName: '',
     routeParams: {},
     selectedMailIds: [],
@@ -79,10 +81,21 @@ const mailsSlice = createSlice({
       state.mail = action.payload;
     },
     setMails: (state, action) => {
-      mailsAdapter.setAll(state, action.payload);
+      mailsAdapter.setAll(state, action.payload.messages);
+      state.nextPageToken = action.payload.nextPageToken;
+    },
+    addMails: (state, action) => {
+      mailsAdapter.addMany(state, action.payload.messages);
+      state.nextPageToken = action.payload.nextPageToken;
+    },
+    markMailAsRead: (state, action) => {
+      console.log(selectMails);
     },
     setMailsLoading: (state, action) => {
       state.loading = action.payload;
+    },
+    setMailsMoreLoading: (state, action) => {
+      state.moreLoading = action.payload;
     },
     setMailsShouldRefresh: (state, action) => {
       state.shouldRefresh = action.payload;
@@ -130,8 +143,11 @@ export const {
   selectMailsByParameter,
   toggleInSelectedMails,
   setMails,
+  addMails,
+  markMailAsRead,
   setMail,
   setMailsLoading,
+  setMailsMoreLoading,
   setMailsShouldRefresh,
   setMailInitialized,
   setMailInitializing,

@@ -9,13 +9,16 @@ import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import _ from '@lodash';
 import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
+import { Tooltip } from '@mui/material';
+import { WebSocketContext } from 'app/ws/WebSocket';
 import MailAttachment from './MailAttachment';
+import MailAttachmentUpload from './MailAttachmentUpload';
 
 /**
  * Form Validation Schema
@@ -26,20 +29,24 @@ const schema = yup.object().shape({
 
 function MailCompose() {
   const [openDialog, setOpenDialog] = useState(false);
-  const { watch, handleSubmit, formState, control } = useForm({
+  const { watch, handleSubmit, formState, control, getValues, setValue } = useForm({
     mode: 'onChange',
     defaultValues: {
-      from: 'johndoe@creapond.com',
       to: '',
       cc: '',
-      bcc: '',
+      replyTo: '',
       subject: '',
-      message: '',
+      text: '',
+      html: '',
+      attachments: [],
     },
     resolver: yupResolver(schema),
   });
+  const ws = useContext(WebSocketContext);
 
   const { isValid, dirtyFields, errors } = formState;
+
+  const attachedFiles = watch('attachments');
 
   const { t } = useTranslation('mailApp');
 
@@ -56,8 +63,20 @@ function MailCompose() {
   }
 
   function onSubmit(data) {
-    console.info(data);
+    ws.sendMessage('mail/send', data);
     setOpenDialog(false);
+  }
+
+  function handleAttachFileAdd(name, base64) {
+    const newAttachedFiles = getValues('attachments');
+    newAttachedFiles.push({ filename: name, content: base64 });
+    setValue('attachments', newAttachedFiles, { shouldDirty: true, shouldValidate: true });
+  }
+
+  function handleAttachedFileRemove(name) {
+    const oldAttachedFiles = getValues('attachments');
+    const newAttachedFiles = oldAttachedFiles.filter((af) => af.filename !== name);
+    setValue('attachments', newAttachedFiles, { shouldDirty: true, shouldValidate: true });
   }
 
   return (
@@ -83,22 +102,6 @@ function MailCompose() {
         <form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
           <DialogContent classes={{ root: 'p-16 pb-0 sm:p-24 sm:pb-0' }}>
             <Controller
-              name="from"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  className="mt-8 mb-16"
-                  label="From"
-                  id="from"
-                  variant="outlined"
-                  fullWidth
-                  inputProps={{ readOnly: true }}
-                />
-              )}
-            />
-
-            <Controller
               name="to"
               control={control}
               render={({ field }) => (
@@ -106,10 +109,10 @@ function MailCompose() {
                   {...field}
                   className="mt-8 mb-16"
                   label="To"
-                  autoFocus
                   id="to"
                   error={!!errors.to}
                   helperText={errors?.to?.message}
+                  autoFocus
                   variant="outlined"
                   fullWidth
                   required
@@ -124,7 +127,7 @@ function MailCompose() {
                 <TextField
                   {...field}
                   className="mt-8 mb-16"
-                  label="Cc"
+                  label="CC"
                   id="cc"
                   variant="outlined"
                   fullWidth
@@ -133,15 +136,14 @@ function MailCompose() {
             />
 
             <Controller
-              name="bcc"
+              name="replyTo"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
                   className="mt-8 mb-16"
-                  label="Bcc"
-                  id="bcc"
-                  name="bcc"
+                  label="Reply To"
+                  id="replyTo"
                   variant="outlined"
                   fullWidth
                 />
@@ -157,7 +159,6 @@ function MailCompose() {
                   className="mt-8 mb-16"
                   label="Subject"
                   id="subject"
-                  name="subject"
                   variant="outlined"
                   fullWidth
                 />
@@ -167,13 +168,21 @@ function MailCompose() {
             <Controller
               className="mt-8 mb-16"
               render={({ field }) => <WYSIWYGEditor {...field} />}
-              name="message"
+              name="html"
               control={control}
             />
 
             <div className="pt-8">
-              <MailAttachment fileName="attachment-2.doc" size="12 kb" />
-              <MailAttachment fileName="attachment-1.jpg" size="350 kb" />
+              {attachedFiles.map((af) => (
+                <MailAttachment
+                  key={af.filename}
+                  fileName={af.filename}
+                  size="12 kb"
+                  onDelete={(name) => handleAttachedFileRemove(name)}
+                />
+              ))}
+              {/* <MailAttachment fileName="attachment-2.doc" size="12 kb" /> */}
+              {/* <MailAttachment fileName="attachment-1.jpg" size="350 kb" /> */}
             </div>
           </DialogContent>
 
@@ -187,9 +196,15 @@ function MailCompose() {
               >
                 Send
               </Button>
-              <IconButton size="large">
-                <Icon>attach_file</Icon>
-              </IconButton>
+              <Tooltip title="Select File" placement="bottom">
+                <div style={{ display: 'initial' }}>
+                  <MailAttachmentUpload
+                    onChange={({ base64, name }) => {
+                      handleAttachFileAdd(name, base64);
+                    }}
+                  />
+                </div>
+              </Tooltip>
             </div>
             <IconButton onClick={handleDelete} size="large">
               <Icon>delete</Icon>

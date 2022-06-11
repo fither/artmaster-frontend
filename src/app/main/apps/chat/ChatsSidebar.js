@@ -19,6 +19,7 @@ import { WebSocketContext } from 'app/ws/WebSocket';
 import { motion } from 'framer-motion';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { selectContacts } from '../contacts/store/contactsSlice';
 import ContactListItem from './ContactListItem';
 import StatusIcon from './StatusIcon';
@@ -57,6 +58,8 @@ function ChatsSidebar(props) {
   const [searchText, setSearchText] = useState('');
   const [statusMenuEl, setStatusMenuEl] = useState(null);
   const [moreMenuEl, setMoreMenuEl] = useState(null);
+
+  const navigate = useNavigate();
 
   const [chatList, setChatList] = useState([]);
 
@@ -183,7 +186,7 @@ function ChatsSidebar(props) {
               open={Boolean(moreMenuEl)}
               onClose={handleMoreMenuClose}
             >
-              <MenuItem onClick={handleMoreMenuClose}>Profile</MenuItem>
+              <MenuItem onClick={() => navigate('/pages/profile')}>Profile</MenuItem>
               <MenuItem onClick={handleMoreMenuClose}>Logout</MenuItem>
             </Menu>
           </div>

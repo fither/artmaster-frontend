@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import withRouter from '@fuse/core/withRouter';
 import { useDeepCompareEffect } from '@fuse/hooks';
+import { format } from 'date-fns';
 import MailChip from '../MailChip';
 import { selectLabels } from '../store/labelsSlice';
 import { selectMails, setMail } from '../store/mailsSlice';
@@ -128,7 +129,7 @@ function MailDetails(props) {
               <Typography variant="body2" color="textSecondary" className="px-4 flex flex-col">
                 <span>{mail.from.email}</span>
                 <span>{mail.to.email}</span>
-                <span>{mail.time}</span>
+                <span>{format(new Date(mail.time), 'eee, dd MMMM')}</span>
               </Typography>
             </div>
           )}
