@@ -3,7 +3,6 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 
 const handleError = ({ onEvent, data, dispatch, ws }) => {
   dispatch(showMessage({ message: data }));
-  console.log(onEvent);
   switch (onEvent) {
     case 'mail/findAll':
       dispatch(

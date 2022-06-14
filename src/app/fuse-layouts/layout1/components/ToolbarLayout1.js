@@ -6,7 +6,6 @@ import Hidden from '@mui/material/Hidden';
 import Toolbar from '@mui/material/Toolbar';
 import ChatPanelToggleButton from 'app/fuse-layouts/shared-components/chatPanel/ChatPanelToggleButton';
 import NavbarToggleButton from 'app/fuse-layouts/shared-components/NavbarToggleButton';
-import QuickPanelToggleButton from 'app/fuse-layouts/shared-components/quickPanel/QuickPanelToggleButton';
 import UserMenu from 'app/fuse-layouts/shared-components/UserMenu';
 import clsx from 'clsx';
 import { memo } from 'react';
@@ -14,7 +13,6 @@ import { useSelector } from 'react-redux';
 import { selectToolbarTheme } from 'app/store/fuse/settingsSlice';
 import AdjustFontSize from '../../shared-components/AdjustFontSize';
 import FullScreenToggle from '../../shared-components/FullScreenToggle';
-import LanguageSwitcher from '../../shared-components/LanguageSwitcher';
 import NotificationPanelToggleButton from '../../shared-components/notificationPanel/NotificationPanelToggleButton';
 
 function ToolbarLayout1(props) {
@@ -58,8 +56,6 @@ function ToolbarLayout1(props) {
           </div>
 
           <div className="flex items-center px-8 h-full overflow-x-auto">
-            <LanguageSwitcher />
-
             <AdjustFontSize />
 
             <FullScreenToggle />
@@ -69,8 +65,6 @@ function ToolbarLayout1(props) {
             <Hidden lgUp>
               <ChatPanelToggleButton />
             </Hidden>
-
-            <QuickPanelToggleButton />
 
             <NotificationPanelToggleButton />
 

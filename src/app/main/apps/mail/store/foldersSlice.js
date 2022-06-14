@@ -17,9 +17,9 @@ export const folders = [
   },
   {
     id: 2,
-    handle: 'DRAFTS',
-    title: 'Drafts',
-    translate: 'DRAFTS',
+    handle: 'DRAFT',
+    title: 'Draft',
+    translate: 'DRAFT',
     icon: 'email_open',
   },
   {
