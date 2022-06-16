@@ -1,6 +1,18 @@
 import Icon from '@mui/material/Icon';
 import IconButton from '@mui/material/IconButton';
 
+function formatBytes(bytes, decimals = 2) {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
+}
+
 function MailAttachmentUpload(props) {
   function handleChange(e) {
     const file = e.target.files[0];
@@ -14,8 +26,10 @@ function MailAttachmentUpload(props) {
     reader.onload = () => {
       if (props.onChange) {
         props.onChange({
-          base64: btoa(reader.result),
-          name: file.name,
+          content: btoa(reader.result),
+          filename: file.name,
+          size: formatBytes(file.size),
+          mimeType: file.type,
         });
       }
     };

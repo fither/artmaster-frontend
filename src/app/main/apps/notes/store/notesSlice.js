@@ -8,13 +8,15 @@ export const {
   selectById: selectNoteById,
 } = notesAdapter.getSelectors((state) => state.notesApp.notes);
 
+const initialState = {
+  searchText: '',
+  noteDialogId: null,
+  variateDescSize: true,
+};
+
 const notesSlice = createSlice({
   name: 'notesApp/notes',
-  initialState: notesAdapter.getInitialState({
-    searchText: '',
-    noteDialogId: null,
-    variateDescSize: true,
-  }),
+  initialState: notesAdapter.getInitialState(initialState),
   reducers: {
     setNotesSearchText: {
       reducer: (state, action) => {
@@ -38,6 +40,7 @@ const notesSlice = createSlice({
     closeNoteDialog: (state, action) => {
       state.noteDialogId = action.null;
     },
+    setInitialNotes: (state, action) => notesAdapter.getInitialState(initialState),
   },
   extraReducers: {},
 });
@@ -52,6 +55,7 @@ export const {
   toggleVariateDescSize,
   openNoteDialog,
   closeNoteDialog,
+  setInitialNotes,
 } = notesSlice.actions;
 
 export default notesSlice.reducer;

@@ -10,17 +10,19 @@ export const {
   selectById: selectEventById,
 } = eventsAdapter.getSelectors((state) => state.calendarApp.events);
 
+const initialState = {
+  eventDialog: {
+    type: 'new',
+    props: {
+      open: false,
+    },
+    data: null,
+  },
+};
+
 const eventsSlice = createSlice({
   name: 'calendarApp/events',
-  initialState: eventsAdapter.getInitialState({
-    eventDialog: {
-      type: 'new',
-      props: {
-        open: false,
-      },
-      data: null,
-    },
-  }),
+  initialState: eventsAdapter.getInitialState(initialState),
   reducers: {
     openNewEventDialog: {
       prepare: (event) => {
@@ -81,6 +83,7 @@ const eventsSlice = createSlice({
         data: null,
       };
     },
+    setInitialEvents: (state, action) => eventsAdapter.getInitialState(initialState),
   },
   extraReducers: {},
 });
@@ -94,6 +97,7 @@ export const {
   closeNewEventDialog,
   openEditEventDialog,
   closeEditEventDialog,
+  setInitialEvents,
 } = eventsSlice.actions;
 
 export default eventsSlice.reducer;

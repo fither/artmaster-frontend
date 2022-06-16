@@ -6,21 +6,23 @@ export const { selectAll: selectTodos, selectById: selectTodosById } = todosAdap
   (state) => state.todoApp.todos
 );
 
+const initialState = {
+  searchText: '',
+  orderBy: '',
+  orderDescending: false,
+  routeParams: {},
+  todoDialog: {
+    type: 'new',
+    props: {
+      open: false,
+    },
+    data: null,
+  },
+};
+
 const todosSlice = createSlice({
   name: 'todoApp/todos',
-  initialState: todosAdapter.getInitialState({
-    searchText: '',
-    orderBy: '',
-    orderDescending: false,
-    routeParams: {},
-    todoDialog: {
-      type: 'new',
-      props: {
-        open: false,
-      },
-      data: null,
-    },
-  }),
+  initialState: todosAdapter.getInitialState(initialState),
   reducers: {
     setTodosSearchText: {
       reducer: (state, action) => {
@@ -74,6 +76,7 @@ const todosSlice = createSlice({
         data: null,
       };
     },
+    setInitialTodos: (state, action) => todosAdapter.getInitialState(initialState),
   },
   extraReducers: {},
 });
@@ -90,6 +93,7 @@ export const {
   closeNewTodoDialog,
   openEditTodoDialog,
   closeEditTodoDialog,
+  setInitialTodos,
 } = todosSlice.actions;
 
 export default todosSlice.reducer;

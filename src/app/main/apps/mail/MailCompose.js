@@ -67,9 +67,9 @@ function MailCompose() {
     setOpenDialog(false);
   }
 
-  function handleAttachFileAdd(name, base64) {
+  function handleAttachFileAdd(data) {
     const newAttachedFiles = getValues('attachments');
-    newAttachedFiles.push({ filename: name, content: base64 });
+    newAttachedFiles.push(data);
     setValue('attachments', newAttachedFiles, { shouldDirty: true, shouldValidate: true });
   }
 
@@ -177,12 +177,10 @@ function MailCompose() {
                 <MailAttachment
                   key={af.filename}
                   fileName={af.filename}
-                  size="12 kb"
+                  size={af.size}
                   onDelete={(name) => handleAttachedFileRemove(name)}
                 />
               ))}
-              {/* <MailAttachment fileName="attachment-2.doc" size="12 kb" /> */}
-              {/* <MailAttachment fileName="attachment-1.jpg" size="350 kb" /> */}
             </div>
           </DialogContent>
 
@@ -199,8 +197,8 @@ function MailCompose() {
               <Tooltip title="Select File" placement="bottom">
                 <div style={{ display: 'initial' }}>
                   <MailAttachmentUpload
-                    onChange={({ base64, name }) => {
-                      handleAttachFileAdd(name, base64);
+                    onChange={(data) => {
+                      handleAttachFileAdd(data);
                     }}
                   />
                 </div>

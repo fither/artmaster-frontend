@@ -5,20 +5,22 @@ const contactsAdapter = createEntityAdapter({});
 export const { selectAll: selectContacts, selectById: selectContactsById } =
   contactsAdapter.getSelectors((state) => state.contactsApp.contacts);
 
+const initialState = {
+  nonContactUsers: {},
+  searchText: '',
+  routeParams: {},
+  contactDialog: {
+    type: 'new',
+    props: {
+      open: false,
+    },
+    data: null,
+  },
+};
+
 const contactsSlice = createSlice({
   name: 'contactsApp/contacts',
-  initialState: contactsAdapter.getInitialState({
-    nonContactUsers: {},
-    searchText: '',
-    routeParams: {},
-    contactDialog: {
-      type: 'new',
-      props: {
-        open: false,
-      },
-      data: null,
-    },
-  }),
+  initialState: contactsAdapter.getInitialState(initialState),
   reducers: {
     addNonContactUser: (state, data) => {
       state.nonContactUsers[data.payload.id] = data.payload;
@@ -68,6 +70,7 @@ const contactsSlice = createSlice({
         data: null,
       };
     },
+    setInitialContacts: (state, action) => contactsAdapter.getInitialState(initialState),
   },
   extraReducers: {},
 });
@@ -82,6 +85,7 @@ export const {
   openEditContactDialog,
   closeEditContactDialog,
   addNonContactUser,
+  setInitialContacts,
 } = contactsSlice.actions;
 
 export default contactsSlice.reducer;

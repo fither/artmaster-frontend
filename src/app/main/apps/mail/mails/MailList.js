@@ -1,3 +1,4 @@
+import _ from '@lodash';
 import FuseUtils from '@fuse/utils';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
@@ -134,7 +135,15 @@ function MailList(props) {
   return (
     <List className="p-0">
       <motion.div variants={container} initial="hidden" animate="show">
-        {filteredData.map((mail) => (
+        {_.orderBy(
+          filteredData,
+          [
+            (o) => {
+              return new Date(o.time);
+            },
+          ],
+          ['desc']
+        ).map((mail) => (
           <motion.div variants={item} key={mail.id}>
             <MailListItem mail={mail} />
           </motion.div>

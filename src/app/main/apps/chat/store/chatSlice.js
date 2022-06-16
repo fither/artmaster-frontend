@@ -1,16 +1,13 @@
-import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-const messagesAdapter = createEntityAdapter({});
-
-export const { selectAll: selectMessages, selectById: selectMessageById } =
-  messagesAdapter.getSelectors((state) => state.chatApp.chat);
+const initialState = {
+  messages: null,
+  contactsToSetMessagesAsRead: [],
+};
 
 const chatSlice = createSlice({
   name: 'chatApp/chat',
-  initialState: {
-    messages: null,
-    contactsToSetMessagesAsRead: [],
-  },
+  initialState,
   reducers: {
     setMessages: (state, data) => {
       state.messages = data.payload;
@@ -37,6 +34,7 @@ const chatSlice = createSlice({
       state.messages[otherUserId] = [...state.messages[otherUserId], message];
     },
     removeChat: (state, action) => action.payload,
+    setInitialChats: (state, action) => initialState,
   },
   extraReducers: {},
 });
@@ -46,6 +44,7 @@ export const {
   addMessage,
   addContactToSetMessagesAsRead,
   removeContactFromSetMessagesAsRead,
+  setInitialChats,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

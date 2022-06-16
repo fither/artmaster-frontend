@@ -4,6 +4,13 @@ import history from '@history';
 import _ from '@lodash';
 import { setDefaultSettings, setInitialSettings } from 'app/store/fuse/settingsSlice';
 import settingsConfig from 'app/fuse-configs/settingsConfig';
+import { setInitialMails } from 'app/main/apps/mail/store/mailsSlice';
+import { setInitialEvents } from 'app/main/apps/calendar/store/eventsSlice';
+import { setInitialContacts } from 'app/main/apps/contacts/store/contactsSlice';
+import { setInitialNotes } from 'app/main/apps/notes/store/notesSlice';
+import { setInitialTodos } from 'app/main/apps/todo/store/todosSlice';
+import { setInitialChats } from 'app/main/apps/chat/store/chatSlice';
+import { setInitialLabels } from 'app/main/apps/notes/store/labelsSlice';
 
 export const updateUserDataNew = (data) => (dispatch, getState) => {
   const oldUser = getState().auth.user;
@@ -54,6 +61,13 @@ export const logoutUser = () => async (dispatch, getState) => {
 
   window.localStorage.removeItem('jwt_access_token');
 
+  dispatch(setInitialLabels());
+  dispatch(setInitialChats());
+  dispatch(setInitialTodos());
+  dispatch(setInitialNotes());
+  dispatch(setInitialContacts());
+  dispatch(setInitialEvents());
+  dispatch(setInitialMails());
   dispatch(userLoggedOut());
   return dispatch(setAuthCompleted(true));
 };

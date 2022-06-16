@@ -21,10 +21,12 @@ const labelsSlice = createSlice({
     closeLabelsDialog: (state, action) => {
       state.labelsDialogOpen = false;
     },
+    setInitialLabels: (state, action) => labelsAdapter.getInitialState({ labelsDialogOpen: false }),
   },
   extraReducers: {},
 });
 
-export const { openLabelsDialog, closeLabelsDialog, setLabels } = labelsSlice.actions;
+export const { openLabelsDialog, closeLabelsDialog, setLabels, setInitialLabels } =
+  labelsSlice.actions;
 
 export default labelsSlice.reducer;

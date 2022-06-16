@@ -1,4 +1,3 @@
-import { showMessage } from 'app/store/fuse/messageSlice';
 import { setLabels } from '../../main/apps/mail/store/labelsSlice';
 import {
   addMails,
@@ -23,7 +22,7 @@ const handleMail = ({ eventAction, data, dispatch, ws }) => {
       // dispatch(setMailsLoading(true));
       dispatch(setMailInitialized(true));
       dispatch(setMailInitializing(false));
-      dispatch(showMessage({ message: 'Mail client initialized' }));
+      // dispatch(showMessage({ message: 'Mail client initialized' }));
       // ws.sendMessage('mail/findAll', 'INBOX');
       break;
     case 'findLabels':

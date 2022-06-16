@@ -8,8 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectFolders } from '../store/foldersSlice';
 import { selectLabels } from '../store/labelsSlice';
 import {
-  toggleLabelOnSelectedMails,
-  setFolderOnSelectedMails,
   selectMailsByParameter,
   deselectAllMails,
   selectAllMails,
@@ -156,7 +154,7 @@ function MailToolbar(props) {
           <div className="border-r-1 h-48 w-1 mx-12 my-0" />
 
           <IconButton
-            onClick={(ev) => dispatch(setFolderOnSelectedMails(4))}
+            // onClick={(ev) => dispatch(setFolderOnSelectedMails(4))}
             aria-label="Delete"
             size="large"
           >
@@ -183,7 +181,7 @@ function MailToolbar(props) {
               folders.map((folder) => (
                 <MenuItem
                   onClick={(ev) => {
-                    dispatch(setFolderOnSelectedMails(folder.id));
+                    // dispatch(setFolderOnSelectedMails(folder.id));
                     handleMenuClose(ev, 'folders');
                   }}
                   key={folder.id}
@@ -213,7 +211,7 @@ function MailToolbar(props) {
               labels.map((label) => (
                 <MenuItem
                   onClick={(ev) => {
-                    dispatch(toggleLabelOnSelectedMails(label.id));
+                    // dispatch(toggleLabelOnSelectedMails(label.id));
                     handleMenuClose(ev, 'labels');
                   }}
                   key={label.id}
