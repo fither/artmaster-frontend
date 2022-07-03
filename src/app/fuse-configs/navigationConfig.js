@@ -12,7 +12,7 @@ i18next.addResourceBundle('ar', 'navigation', ar);
 const navigationConfig = [
   {
     id: 'applications',
-    title: 'Applications',
+    title: '',
     translate: 'APPLICATIONS',
     type: 'group',
     icon: 'apps',

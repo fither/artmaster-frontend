@@ -138,7 +138,7 @@ function FuseShortcuts(props) {
             )
         )}
 
-        <Tooltip
+        {/* <Tooltip
           title="Click to add/remove shortcut"
           placement={props.variant === 'horizontal' ? 'bottom' : 'left'}
         >
@@ -153,7 +153,7 @@ function FuseShortcuts(props) {
           >
             <Icon sx={{ color: amber[600] }}>star</Icon>
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
       </motion.div>
 
       <Menu

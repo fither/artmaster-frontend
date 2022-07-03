@@ -29,7 +29,7 @@ import { selectLocations } from '../locations/store/locationsSlice';
 const defaultValues = {
   firstName: '',
   lastName: '',
-  photo_url: 'assets/images/avatars/Abbott.jpg',
+  photo_url: 'assets/images/avatars/user.png',
   username: '',
   email: '',
   password: '',

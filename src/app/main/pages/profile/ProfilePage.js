@@ -169,7 +169,7 @@ function ProfilePage() {
               </div>
             </div>
           </div>
-          <Tabs
+          {/* <Tabs
             value={selectedTab}
             onChange={handleTabChange}
             indicatorColor="primary"
@@ -197,7 +197,7 @@ function ProfilePage() {
               disableRipple
               label="Photos & Videos"
             />
-          </Tabs>
+          </Tabs> */}
           <ProfileUpdateDialog
             open={profileDialogOpen}
             onClose={(ev) => setProfileDialogOpen(false)}
