@@ -28,6 +28,7 @@ const prepareUser = (ws) => {
   ws.sendMessage('country/findAll');
   ws.sendMessage('role/findAll');
   ws.sendMessage('label/findAll');
+  ws.sendMessage('location/findAll');
   // ws.sendMessage('analytics/findAll');
 };
 

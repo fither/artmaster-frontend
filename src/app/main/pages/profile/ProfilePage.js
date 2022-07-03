@@ -2,12 +2,9 @@ import FusePageSimple from '@fuse/core/FusePageSimple';
 import { styled } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { WebSocketContext } from 'app/ws/WebSocket';
@@ -15,7 +12,6 @@ import { setExternalUserLoading } from 'app/main/apps/users/store/usersSlice';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { setSelectedContactId } from 'app/main/apps/chat/store/contactsSlice';
 import AboutTab from './tabs/AboutTab';
-import PhotosVideosTab from './tabs/PhotosVideosTab';
 import ProfileUpdateDialog from './ProfileUpdateDialog';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
@@ -59,7 +55,6 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 }));
 
 function ProfilePage() {
-  const [selectedTab, setSelectedTab] = useState(0);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
 
   const user = useSelector(({ auth }) => auth.user);
@@ -72,10 +67,6 @@ function ProfilePage() {
   const ws = useContext(WebSocketContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  function handleTabChange(event, value) {
-    setSelectedTab(value);
-  }
 
   function handleOnClick(ev) {
     ev.preventDefault();
@@ -169,35 +160,6 @@ function ProfilePage() {
               </div>
             </div>
           </div>
-          {/* <Tabs
-            value={selectedTab}
-            onChange={handleTabChange}
-            indicatorColor="primary"
-            textColor="inherit"
-            variant="scrollable"
-            scrollButtons={false}
-            className="w-full px-24 -mx-4 min-h-40"
-            classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
-            TabIndicatorProps={{
-              children: (
-                <Box
-                  sx={{ bgcolor: 'text.disabled' }}
-                  className="w-full h-full rounded-full opacity-20"
-                />
-              ),
-            }}
-          >
-            <Tab
-              className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
-              disableRipple
-              label="About"
-            />
-            <Tab
-              className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
-              disableRipple
-              label="Photos & Videos"
-            />
-          </Tabs> */}
           <ProfileUpdateDialog
             open={profileDialogOpen}
             onClose={(ev) => setProfileDialogOpen(false)}
@@ -206,8 +168,7 @@ function ProfilePage() {
       }
       content={
         <div className="p-16 sm:p-24">
-          {selectedTab === 0 && <AboutTab user={userData} />}
-          {selectedTab === 1 && <PhotosVideosTab />}
+          <AboutTab user={userData} />
         </div>
       }
     />

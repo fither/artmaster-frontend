@@ -4,7 +4,7 @@ import Icon from '@mui/material/Icon';
 import Typography from '@mui/material/Typography';
 import withReducer from 'app/store/withReducer';
 import { motion } from 'framer-motion';
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -76,6 +76,12 @@ function CalendarApp(props) {
   const events = useSelector(selectEvents);
   const calendarRef = useRef();
   const ws = useContext(WebSocketContext);
+
+  useEffect(() => {
+    if (calendarRef.current) {
+      calendarRef.current.getApi().today();
+    }
+  }, [calendarRef]);
 
   const headerEl = useRef(null);
 

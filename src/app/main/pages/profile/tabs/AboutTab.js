@@ -7,10 +7,8 @@ import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 function AboutTab(props) {
-  const user = useSelector(({ auth }) => auth.user);
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -71,7 +69,7 @@ function AboutTab(props) {
               <div className="mb-24">
                 <Typography className="font-semibold mb-4 text-15">Locations</Typography>
 
-                {user.countries.map((country) => (
+                {props.user.countries.map((country) => (
                   <div className="flex items-center" key={country.id}>
                     <Typography>{country.name}</Typography>
                     <Icon className="text-16 mx-4" color="action">

@@ -15,7 +15,7 @@ function OrdersToolbar(props) {
   }
 
   return (
-    <div className="flex justify-between w-full">
+    <div className="flex justify-between w-full px-24">
       <div className="flex" />
       <div className="flex items-center">
         <FormControl className="" variant="filled">

@@ -33,10 +33,6 @@ function OrdersTableRow(props) {
           />
         </TableCell>
 
-        <TableCell className="p-4 md:p-16" component="th" scope="row">
-          {props.order.id}
-        </TableCell>
-
         <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
           {props.order.customerName}
         </TableCell>
@@ -68,10 +64,10 @@ function OrdersTableRow(props) {
         </TableCell>
 
         <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-          {props.order.totalPrice}
+          <div className="font-bold bg-green rounded-full py-4 px-12">{props.order.totalPrice}</div>
         </TableCell>
       </TableRow>
-      <TableRow className="align-baseline">
+      <TableRow className="align-baseline internal-row">
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>

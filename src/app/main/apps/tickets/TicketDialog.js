@@ -61,6 +61,11 @@ function TicketDialog(props) {
       name: 'Order Problem',
       value: 'order-problem',
     },
+    {
+      id: '3',
+      name: 'Other',
+      value: 'other',
+    },
   ];
 
   const initDialog = useCallback(() => {

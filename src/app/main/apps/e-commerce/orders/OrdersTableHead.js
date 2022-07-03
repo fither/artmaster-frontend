@@ -19,13 +19,6 @@ import { openNewOrderDialog } from '../store/ordersSlice';
 
 const rows = [
   {
-    id: 'id',
-    align: 'left',
-    disablePadding: false,
-    label: 'ID',
-    sort: true,
-  },
-  {
     id: 'customer',
     align: 'left',
     disablePadding: false,
