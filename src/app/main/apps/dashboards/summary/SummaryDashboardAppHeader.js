@@ -93,7 +93,7 @@ function SummaryDashboardAppHeader(props) {
           </IconButton>
         </Hidden>
       </div>
-      <div className="flex items-end">
+      {/* <div className="flex items-end">
         <div className="flex items-center">
           <Box
             className={clsx('flex items-center h-40 px-16 text-13 sm:text-16')}
@@ -139,7 +139,7 @@ function SummaryDashboardAppHeader(props) {
               ))}
           </Menu>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

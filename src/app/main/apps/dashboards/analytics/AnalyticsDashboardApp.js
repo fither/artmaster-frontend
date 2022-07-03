@@ -17,6 +17,7 @@ import Widget7 from './widgets/Widget7';
 import Widget8 from './widgets/Widget8';
 import Widget9 from './widgets/Widget9';
 import { selectCountries } from '../../users/store/countriesSlice';
+import underConst from '../../../../../images/under-const.png';
 
 function AnalyticsDashboardApp() {
   const dispatch = useDispatch();
@@ -51,136 +52,141 @@ function AnalyticsDashboardApp() {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between w-full">
-        <div className="flex" />
-        <div className="flex items-center">
-          <FormControl className="" variant="filled">
-            <Select
-              value={selectedCountry}
-              onChange={handleCountryChange}
-              displayEmpty
-              name="filter"
-              classes={{ select: 'py-8' }}
-            >
-              <MenuItem value="">
-                <em>Select Country</em>
-              </MenuItem>
-              {countries.map((country) => {
-                return (
-                  <MenuItem key={country.id} value={country.code}>
-                    {country.name}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </div>
+      <div className="flex justify-center w-full">
+        <img src={underConst} width="1000" alt="under const" />
       </div>
-      <Widget1 data={widgets.widget1} />
-      <motion.div
-        className="flex flex-col md:flex-row sm:p-8 container"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
-        <div className="flex flex-1 flex-col min-w-0 pt-16">
-          <Typography
-            component={motion.div}
-            variants={item}
-            className="px-16 pb-8 text-18 font-medium"
-            color="textSecondary"
-          >
-            How are your active users trending over time?
-          </Typography>
-
-          <div className="flex flex-col sm:flex sm:flex-row pb-32">
-            <motion.div variants={item} className="widget flex w-full sm:w-1/3 p-16">
-              <Widget2 data={widgets.widget2} />
-            </motion.div>
-
-            <motion.div variants={item} className="widget flex w-full sm:w-1/3 p-16">
-              <Widget3 data={widgets.widget3} />
-            </motion.div>
-
-            <motion.div variants={item} className="widget w-full sm:w-1/3 p-16">
-              <Widget4 data={widgets.widget4} />
-            </motion.div>
-          </div>
-
-          <Typography
-            component={motion.div}
-            variants={item}
-            className="px-16 pb-8 text-18 font-medium"
-            color="textSecondary"
-          >
-            How many pages your users visit?
-          </Typography>
-
-          <motion.div variants={item} className="widget w-full p-16 pb-48">
-            <Widget5 data={widgets.widget5} />
-          </motion.div>
-
-          <Typography
-            component={motion.div}
-            variants={item}
-            className="px-16 pb-8 text-18 font-medium"
-            color="textSecondary"
-          >
-            Where are your users?
-          </Typography>
-
-          <motion.div variants={item} className="widget w-full p-16 pb-32">
-            <Widget6 data={widgets.widget6} />
-          </motion.div>
-        </div>
-
-        <div className="flex flex-wrap w-full md:w-320 pt-16">
-          <div className="mb-32 w-full sm:w-1/2 md:w-full">
-            <Typography
-              component={motion.div}
-              variants={item}
-              className="px-16 pb-8 text-18 font-medium"
-              color="textSecondary"
-            >
-              What are your top devices?
-            </Typography>
-
-            <motion.div variants={item} className="widget w-full p-16">
-              <Widget7 data={widgets.widget7} />
-            </motion.div>
-          </div>
-
-          <div className="mb-32 w-full sm:w-1/2 md:w-full">
-            <Typography
-              component={motion.div}
-              variants={item}
-              className="px-16 pb-8 text-18 font-medium"
-              color="textSecondary"
-            >
-              How are your sales?
-            </Typography>
-
-            <motion.div variants={item} className="widget w-full p-16">
-              <Widget8 data={widgets.widget8} />
-            </motion.div>
-          </div>
-
-          <div className="mb-32 w-full sm:w-1/2 md:w-full">
-            <Typography
-              component={motion.div}
-              variants={item}
-              className="px-16 pb-8 text-18 font-medium lg:pt-0"
-              color="textSecondary"
-            >
-              What are your top campaigns?
-            </Typography>
-            <motion.div variants={item} className="widget w-full p-16">
-              <Widget9 data={widgets.widget9} />
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
     </div>
+    // <div className="w-full">
+    //   <div className="flex justify-between w-full">
+    //     <div className="flex" />
+    //     <div className="flex items-center">
+    //       <FormControl className="" variant="filled">
+    //         <Select
+    //           value={selectedCountry}
+    //           onChange={handleCountryChange}
+    //           displayEmpty
+    //           name="filter"
+    //           classes={{ select: 'py-8' }}
+    //         >
+    //           <MenuItem value="">
+    //             <em>Select Country</em>
+    //           </MenuItem>
+    //           {countries.map((country) => {
+    //             return (
+    //               <MenuItem key={country.id} value={country.code}>
+    //                 {country.name}
+    //               </MenuItem>
+    //             );
+    //           })}
+    //         </Select>
+    //       </FormControl>
+    //     </div>
+    //   </div>
+    //   <Widget1 data={widgets.widget1} />
+    //   <motion.div
+    //     className="flex flex-col md:flex-row sm:p-8 container"
+    //     variants={container}
+    //     initial="hidden"
+    //     animate="show"
+    //   >
+    //     <div className="flex flex-1 flex-col min-w-0 pt-16">
+    //       <Typography
+    //         component={motion.div}
+    //         variants={item}
+    //         className="px-16 pb-8 text-18 font-medium"
+    //         color="textSecondary"
+    //       >
+    //         How are your active users trending over time?
+    //       </Typography>
+
+    //       <div className="flex flex-col sm:flex sm:flex-row pb-32">
+    //         <motion.div variants={item} className="widget flex w-full sm:w-1/3 p-16">
+    //           <Widget2 data={widgets.widget2} />
+    //         </motion.div>
+
+    //         <motion.div variants={item} className="widget flex w-full sm:w-1/3 p-16">
+    //           <Widget3 data={widgets.widget3} />
+    //         </motion.div>
+
+    //         <motion.div variants={item} className="widget w-full sm:w-1/3 p-16">
+    //           <Widget4 data={widgets.widget4} />
+    //         </motion.div>
+    //       </div>
+
+    //       <Typography
+    //         component={motion.div}
+    //         variants={item}
+    //         className="px-16 pb-8 text-18 font-medium"
+    //         color="textSecondary"
+    //       >
+    //         How many pages your users visit?
+    //       </Typography>
+
+    //       <motion.div variants={item} className="widget w-full p-16 pb-48">
+    //         <Widget5 data={widgets.widget5} />
+    //       </motion.div>
+
+    //       <Typography
+    //         component={motion.div}
+    //         variants={item}
+    //         className="px-16 pb-8 text-18 font-medium"
+    //         color="textSecondary"
+    //       >
+    //         Where are your users?
+    //       </Typography>
+
+    //       <motion.div variants={item} className="widget w-full p-16 pb-32">
+    //         <Widget6 data={widgets.widget6} />
+    //       </motion.div>
+    //     </div>
+
+    //     <div className="flex flex-wrap w-full md:w-320 pt-16">
+    //       <div className="mb-32 w-full sm:w-1/2 md:w-full">
+    //         <Typography
+    //           component={motion.div}
+    //           variants={item}
+    //           className="px-16 pb-8 text-18 font-medium"
+    //           color="textSecondary"
+    //         >
+    //           What are your top devices?
+    //         </Typography>
+
+    //         <motion.div variants={item} className="widget w-full p-16">
+    //           <Widget7 data={widgets.widget7} />
+    //         </motion.div>
+    //       </div>
+
+    //       <div className="mb-32 w-full sm:w-1/2 md:w-full">
+    //         <Typography
+    //           component={motion.div}
+    //           variants={item}
+    //           className="px-16 pb-8 text-18 font-medium"
+    //           color="textSecondary"
+    //         >
+    //           How are your sales?
+    //         </Typography>
+
+    //         <motion.div variants={item} className="widget w-full p-16">
+    //           <Widget8 data={widgets.widget8} />
+    //         </motion.div>
+    //       </div>
+
+    //       <div className="mb-32 w-full sm:w-1/2 md:w-full">
+    //         <Typography
+    //           component={motion.div}
+    //           variants={item}
+    //           className="px-16 pb-8 text-18 font-medium lg:pt-0"
+    //           color="textSecondary"
+    //         >
+    //           What are your top campaigns?
+    //         </Typography>
+    //         <motion.div variants={item} className="widget w-full p-16">
+    //           <Widget9 data={widgets.widget9} />
+    //         </motion.div>
+    //       </div>
+    //     </div>
+    //   </motion.div>
+    // </div>
   );
 }
 

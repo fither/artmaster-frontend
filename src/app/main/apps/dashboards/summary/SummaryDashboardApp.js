@@ -15,6 +15,7 @@ import { getWeather, getWidgets, selectWidgets } from './store/widgetsSlice';
 import BudgetSummaryTab from './tabs/BudgetSummaryTab';
 import HomeTab from './tabs/HomeTab';
 import { selectCountries } from '../../users/store/countriesSlice';
+import underConst from '../../../../../images/under-const.png';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -72,40 +73,41 @@ function SummaryDashboardApp(props) {
   return (
     <Root
       header={<SummaryDashboardAppHeader pageLayout={pageLayout} />}
-      contentToolbar={
-        <Tabs
-          value={tabValue}
-          onChange={handleChangeTab}
-          indicatorColor="secondary"
-          textColor="inherit"
-          variant="scrollable"
-          scrollButtons={false}
-          className="w-full px-24 -mx-4 min-h-40"
-          classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
-          TabIndicatorProps={{
-            children: (
-              <Box
-                sx={{ bgcolor: 'text.disabled' }}
-                className="w-full h-full rounded-full opacity-20"
-              />
-            ),
-          }}
-        >
-          <Tab
-            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
-            disableRipple
-            label="Home"
-          />
-          <Tab
-            className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
-            disableRipple
-            label="Budget Summary"
-          />
-        </Tabs>
-      }
+      // contentToolbar={
+      //   <Tabs
+      //     value={tabValue}
+      //     onChange={handleChangeTab}
+      //     indicatorColor="secondary"
+      //     textColor="inherit"
+      //     variant="scrollable"
+      //     scrollButtons={false}
+      //     className="w-full px-24 -mx-4 min-h-40"
+      //     classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
+      //     TabIndicatorProps={{
+      //       children: (
+      //         <Box
+      //           sx={{ bgcolor: 'text.disabled' }}
+      //           className="w-full h-full rounded-full opacity-20"
+      //         />
+      //       ),
+      //     }}
+      //   >
+      //     <Tab
+      //       className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+      //       disableRipple
+      //       label="Home"
+      //     />
+      //     <Tab
+      //       className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+      //       disableRipple
+      //       label="Budget Summary"
+      //     />
+      //   </Tabs>
+      // }
       content={
-        <div>
-          <div className="flex justify-between w-full">
+        <div className="flex justify-center w-full">
+          <img src={underConst} width="600" alt="underConst" />
+          {/* <div className="flex justify-between w-full">
             <div className="flex" />
             <div className="flex items-center">
               <FormControl className="" variant="filled">
@@ -133,7 +135,7 @@ function SummaryDashboardApp(props) {
           <div className="p-12 lg:ltr:pr-0 lg:rtl:pl-0">
             {tabValue === 0 && <HomeTab />}
             {tabValue === 1 && <BudgetSummaryTab />}
-          </div>
+          </div> */}
         </div>
       }
       rightSidebarContent={<SummaryDashboardAppSidebar />}

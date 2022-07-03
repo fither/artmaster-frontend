@@ -115,7 +115,7 @@
         "@typescript-eslint/parser": "^4.33.0",
         "autoprefixer": "9.8.8",
         "babel-eslint": "10.1.0",
-        "cross-env": "7.0.3",
+        "cross-env": "^7.0.3",
         "eslint": "7.32.0",
         "eslint-config-airbnb": "^18.2.1",
         "eslint-config-prettier": "^8.3.0",
@@ -139,7 +139,7 @@
         "util": "^0.12.4"
     },
     "scripts": {
-        "start": "BROWSER=none craco start",
+        "start": "cross-env BROWSER=none craco start",
         "build": "cross-env GENERATE_SOURCEMAP=false craco build",
         "eject": "craco eject",
         "build-docs": "babel-node --presets @babel/preset-env src/app/main/documentation/material-ui-components/build.js",
