@@ -149,6 +149,14 @@ const navigationConfig = [
         icon: 'announcement',
         url: 'apps/announcement',
       },
+      {
+        id: 'logs',
+        title: 'Logs',
+        translate: 'LOGS',
+        type: 'item',
+        icon: 'article',
+        url: 'apps/logs',
+      },
     ],
   },
 ];

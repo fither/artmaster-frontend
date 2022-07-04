@@ -15,6 +15,7 @@ import handleOrder from './handlers/order';
 import handleProduct from './handlers/product';
 import handleAnnouncement from './handlers/announcement';
 import handleMail from './handlers/mail';
+import handleLog from './handlers/log';
 import handleError from './handlers/error';
 
 const handleMessage = (handlePayload) => {
@@ -69,6 +70,9 @@ const handleMessage = (handlePayload) => {
       break;
     case 'mail':
       handleMail(handlePayload);
+      break;
+    case 'log':
+      handleLog(handlePayload);
       break;
     case 'error':
       handleError(handlePayload);
