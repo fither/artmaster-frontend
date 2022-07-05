@@ -11,6 +11,7 @@ export const { selectAll: selectCountries } = countriesAdapter.getSelectors(
 const countriesSlice = createSlice({
   name: 'usersApp/countries',
   initialState: countriesAdapter.getInitialState({
+    availableCountries: {},
     states: [],
   }),
   reducers: {
@@ -20,10 +21,13 @@ const countriesSlice = createSlice({
     setStates: (state, data) => {
       state.states = data.payload;
     },
+    setAvailableCountries: (state, data) => {
+      state.availableCountries = data.payload;
+    },
   },
   extraReducers: {},
 });
 
-export const { setCountries, setStates } = countriesSlice.actions;
+export const { setCountries, setStates, setAvailableCountries } = countriesSlice.actions;
 
 export default countriesSlice.reducer;

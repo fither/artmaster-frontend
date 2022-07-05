@@ -15,14 +15,24 @@ import { forwardRef, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { WebSocketContext } from 'app/ws/WebSocket';
-import { Button, IconButton, Paper, Slide } from '@mui/material';
+import {
+  Button,
+  CardActions,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Paper,
+  Slide,
+} from '@mui/material';
 import { convertToHTML } from 'draft-convert';
 import { convertFromRaw } from 'draft-js';
 import format from 'date-fns/format';
 import Carousel from 'react-material-ui-carousel';
 import DOMPurify from 'dompurify';
 import reducer from './store';
-import { getCategories, selectCategories } from './store/categoriesSlice';
 import {
   openEditAnnouncementDialog,
   openNewAnnouncementDialog,
@@ -31,6 +41,7 @@ import {
 } from './store/announcementsSlice';
 import AnnouncementDialog from './AnnouncementDialog';
 import AnnouncementImageDialog from './AnnouncementImageDialog';
+import { selectCountries } from '../users/store/countriesSlice';
 
 const Root = styled('div')(({ theme }) => ({
   '& .header': {
@@ -62,8 +73,10 @@ function AnnouncementApp(props) {
   const announcementImages = useSelector(
     ({ announcementApp }) => announcementApp.announcements.images
   );
-  const categories = useSelector(selectCategories);
   const user = useSelector(({ auth }) => auth.user);
+  const allCountries = useSelector(selectCountries);
+  const availableCountries = useSelector(({ usersApp }) => usersApp.countries.availableCountries);
+  const [filteredCountries, setFilteredCountries] = useState([]);
 
   const ws = useContext(WebSocketContext);
 
@@ -71,10 +84,10 @@ function AnnouncementApp(props) {
   const [hasPermission, setHasPermission] = useState(false);
   const [filteredData, setFilteredData] = useState(null);
   const [searchText, setSearchText] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCountry, setSelectedCountry] = useState('0');
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
 
   useEffect(() => {
-    dispatch(getCategories());
     ws.sendMessage('announcement/findAll');
     ws.sendMessage('announcement/findAllImages');
   }, [dispatch, ws]);
@@ -87,12 +100,12 @@ function AnnouncementApp(props) {
 
   useEffect(() => {
     function getFilteredArray() {
-      if (searchText.length === 0 && selectedCategory === 'all') {
+      if (searchText.length === 0 && selectedCountry === '0') {
         return announcements;
       }
 
       return _.filter(announcements, (item) => {
-        if (selectedCategory !== 'all' && item.category !== selectedCategory) {
+        if (selectedCountry !== '0' && `${item.countryId}` !== `${selectedCountry}`) {
           return false;
         }
         return item.title.toLowerCase().includes(searchText.toLowerCase());
@@ -102,14 +115,23 @@ function AnnouncementApp(props) {
     if (announcements) {
       setFilteredData(getFilteredArray());
     }
-  }, [announcements, searchText, selectedCategory]);
+  }, [announcements, searchText, selectedCountry]);
 
-  function handleSelectedCategory(event) {
-    setSelectedCategory(event.target.value);
-  }
+  useEffect(() => {
+    if (Object.keys(availableCountries).length) {
+      setFilteredCountries(allCountries.filter((c) => availableCountries[c.code] === ''));
+    } else {
+      setFilteredCountries(allCountries);
+    }
+  }, [allCountries, availableCountries]);
 
   function handleSearchText(event) {
     setSearchText(event.target.value);
+  }
+
+  function getHTMLFromRaw(raw) {
+    const returnValue = raw ? convertToHTML(convertFromRaw(JSON.parse(raw))) : null;
+    return returnValue ? DOMPurify.sanitize(returnValue) : '';
   }
 
   return (
@@ -166,20 +188,20 @@ function AnnouncementApp(props) {
             }}
           />
           <FormControl className="flex w-full sm:w-320 mx-16" variant="outlined">
-            <InputLabel id="category-select-label">Category</InputLabel>
+            <InputLabel id="country-select-label">Country</InputLabel>
             <Select
-              labelId="category-select-label"
-              id="category-select"
-              label="Category"
-              value={selectedCategory}
-              onChange={handleSelectedCategory}
+              labelId="country-select-label"
+              id="country-select"
+              label="Country"
+              value={selectedCountry}
+              onChange={(event) => setSelectedCountry(event.target.value)}
             >
-              <MenuItem value="all">
-                <em> All </em>
+              <MenuItem value="0">
+                <em>All</em>
               </MenuItem>
-              {categories.map((category) => (
-                <MenuItem value={category.value} key={category.id}>
-                  {category.label}
+              {filteredCountries.map((country) => (
+                <MenuItem value={country.id} key={country.id}>
+                  {country.name}
                 </MenuItem>
               ))}
             </Select>
@@ -206,11 +228,6 @@ function AnnouncementApp(props) {
               },
             };
 
-            function getHTMLFromRaw(raw) {
-              const returnValue = raw ? convertToHTML(convertFromRaw(JSON.parse(raw))) : null;
-              return returnValue ? DOMPurify.sanitize(returnValue) : '';
-            }
-
             return (
               filteredData &&
               (filteredData.length > 0 ? (
@@ -230,8 +247,8 @@ function AnnouncementApp(props) {
                     ],
                     ['desc']
                   ).map((announcement) => {
-                    const category = categories.find(
-                      (_cat) => _cat.value === announcement.category
+                    const country = filteredCountries.find(
+                      (_country) => _country.id === announcement.countryId
                     );
                     return (
                       <motion.div
@@ -240,15 +257,9 @@ function AnnouncementApp(props) {
                         key={announcement.id}
                       >
                         <Card className="flex flex-col h-256 shadow">
-                          <div
-                            className="flex shrink-0 items-center justify-between px-24 h-64"
-                            style={{
-                              background: category.color,
-                              color: theme.palette.getContrastText(category.color),
-                            }}
-                          >
+                          <div className="flex shrink-0 items-center justify-between px-24 h-64">
                             <Typography className="font-medium truncate" color="inherit">
-                              {category.label} - {announcement.title}
+                              {country ? country.name : ''} - {announcement.title}
                             </Typography>
                             <div className="flex items-center justify-center opacity-75">
                               <div className="text-14 font-medium whitespace-nowrap">
@@ -268,7 +279,7 @@ function AnnouncementApp(props) {
                               </div>
                             </div>
                           </div>
-                          <CardContent className="flex flex-col flex-auto items-center justify-center">
+                          <CardContent className="flex flex-col flex-auto items-center justify-start overflow-hidden">
                             <Typography
                               variant="body1"
                               className="w-full"
@@ -277,6 +288,15 @@ function AnnouncementApp(props) {
                               }}
                             />
                           </CardContent>
+                          <CardActions>
+                            <Button
+                              onClick={() => setSelectedAnnouncement(announcement)}
+                              color="secondary"
+                              variant="outlined"
+                            >
+                              Show Announcement
+                            </Button>
+                          </CardActions>
                         </Card>
                       </motion.div>
                     );
@@ -290,7 +310,7 @@ function AnnouncementApp(props) {
                 </div>
               ))
             );
-          }, [filteredData, categories, theme.palette, hasPermission, dispatch])}
+          }, [filteredData, filteredCountries, hasPermission, dispatch])}
 
           <div className="py-24 carousel-wrapper" style={{ width: '40%' }}>
             {useMemo(() => {
@@ -314,6 +334,34 @@ function AnnouncementApp(props) {
               }
             }, [announcementImages])}
           </div>
+
+          <Dialog
+            open={selectedAnnouncement !== null}
+            onClose={() => setSelectedAnnouncement(null)}
+            TransitionComponent={Transition}
+            maxWidth="lg"
+          >
+            <DialogTitle>
+              <Typography className="pt-8 font-medium text-24">Announcement Title</Typography>
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                className="leading-normal text-14"
+                dangerouslySetInnerHTML={{
+                  __html: selectedAnnouncement ? getHTMLFromRaw(selectedAnnouncement.content) : '',
+                }}
+              />
+            </DialogContent>
+            <DialogActions className="p-16" align="center">
+              <Button
+                onClick={() => setSelectedAnnouncement(null)}
+                color="secondary"
+                variant="outlined"
+              >
+                CLOSE
+              </Button>
+            </DialogActions>
+          </Dialog>
 
           <AnnouncementDialog />
         </div>

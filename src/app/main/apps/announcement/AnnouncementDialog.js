@@ -26,17 +26,18 @@ import {
   closeNewAnnouncementDialog,
 } from './store/announcementsSlice';
 import { selectCategories } from './store/categoriesSlice';
+import { selectCountries } from '../users/store/countriesSlice';
 
 const defaultValues = {
   title: '',
   content: '',
-  category: '',
+  countryId: '',
 };
 
 const schema = yup.object().shape({
   title: yup.string().required('You must enter a title'),
   content: yup.string().required('You must enter a content'),
-  category: yup.string().required('You must select a category'),
+  countryId: yup.string().required('You must select a category'),
 });
 
 function AnnouncementDialog(props) {
@@ -45,6 +46,11 @@ function AnnouncementDialog(props) {
     ({ announcementApp }) => announcementApp.announcements.announcementDialog
   );
   const categories = useSelector(selectCategories);
+
+  const allCountries = useSelector(selectCountries);
+  const availableCountries = useSelector(({ usersApp }) => usersApp.countries.availableCountries);
+  const [filteredCountries, setFilteredCountries] = useState([]);
+
   const user = useSelector(({ auth }) => auth.user);
   const ws = useContext(WebSocketContext);
   const { control, watch, reset, handleSubmit, formState, getValues, setValue } = useForm({
@@ -79,6 +85,14 @@ function AnnouncementDialog(props) {
       initDialog();
     }
   }, [announcementDialog.props.open, initDialog]);
+
+  useEffect(() => {
+    if (Object.keys(availableCountries).length) {
+      setFilteredCountries(allCountries.filter((c) => availableCountries[c.code] === ''));
+    } else {
+      setFilteredCountries(allCountries);
+    }
+  }, [allCountries, availableCountries]);
 
   function closeComposeDialog() {
     return announcementDialog.type === 'edit'
@@ -160,26 +174,26 @@ function AnnouncementDialog(props) {
         <DialogContent style={{ minWidth: '300px' }} classes={{ root: 'pb-24' }}>
           <div className="flex">
             <div className="min-w-48 pt-20">
-              <Icon color="action">category</Icon>
+              <Icon color="action">flag</Icon>
             </div>
             <Controller
               control={control}
-              name="category"
+              name="countryId"
               render={({ field }) => (
                 <TextField
                   {...field}
                   className="mb-24"
-                  label="Category"
-                  id="category"
+                  label="Country"
+                  id="countryId"
                   variant="outlined"
                   select
                   fullWidth
                   required
                 >
-                  {categories.map((c) => {
+                  {filteredCountries.map((c) => {
                     return (
-                      <MenuItem value={c.value} key={c.id}>
-                        {c.label}
+                      <MenuItem value={c.id} key={c.id}>
+                        {c.name}
                       </MenuItem>
                     );
                   })}

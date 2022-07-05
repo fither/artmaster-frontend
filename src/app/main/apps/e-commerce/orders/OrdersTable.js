@@ -38,7 +38,7 @@ function OrdersTable(props) {
   useEffect(() => {
     if (!loading) {
       dispatch(setOrdersLoading(true));
-      ws.sendMessage('order/findAll', selectedCountry);
+      ws.sendMessage('order/findAll', selectedCountry !== '0' ? selectedCountry : '');
     }
     ws.sendMessage('assignment/findAll');
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -3,6 +3,8 @@ import * as XLSX from 'xlsx';
 import JsPDF from 'jspdf';
 import 'jspdf-autotable';
 
+export const possibleNameFields = ['name', 'description', 'className'];
+
 export const exportCSV = (csvData, fileName, onlyDictWords) => {
   const fileType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
@@ -32,13 +34,17 @@ export const exportPDF = (datas, fileName, onlyDictWords) => {
 
   const unit = 'pt';
   const size = 'A4'; // Use A1, A2, A3 or A4
-  const orientation = 'portrait'; // portrait or landscape
+  let orientation = 'portrait'; // portrait or landscape
+
+  if (Object.keys(datas).length > 4) {
+    orientation = 'landscape';
+  }
 
   const doc = new JsPDF(orientation, unit, size);
 
   doc.setFontSize(15);
 
-  const headers = [Object.keys(datas[0])];
+  const headers = [filterHeader(Object.keys(datas[0]))];
   const datasLength = datas.length;
   const changedHeaders = [changeArrayKeyNames(headers[0])];
 
@@ -48,7 +54,18 @@ export const exportPDF = (datas, fileName, onlyDictWords) => {
     const dataRow = [];
     const headersLength = headers[0].length;
     for (let j = 0; j < headersLength; j += 1) {
-      dataRow.push(datas[i][headers[0][j]]);
+      let dataField = datas[i][headers[0][j]];
+      if (typeof dataField === 'object') {
+        const keys = Object.keys(dataField);
+        const keysLength = keys.length;
+        for (let x = 0; x < keysLength; x += 1) {
+          if (possibleNameFields.includes(keys[x])) {
+            dataField = dataField[keys[x]];
+            break;
+          }
+        }
+      }
+      dataRow.push(dataField);
     }
     data.push(dataRow);
   }
@@ -74,13 +91,17 @@ export const printTable = (datas, fileName, onlyDictWords) => {
 
   const unit = 'pt';
   const size = 'A4'; // Use A1, A2, A3 or A4
-  const orientation = 'portrait'; // portrait or landscape
+  let orientation = 'portrait'; // portrait or landscape
+
+  if (Object.keys(datas).length > 4) {
+    orientation = 'landscape';
+  }
 
   const doc = new JsPDF(orientation, unit, size);
 
   doc.setFontSize(15);
 
-  const headers = [Object.keys(datas[0])];
+  const headers = [filterHeader(Object.keys(datas[0]))];
   const datasLength = datas.length;
   const changedHeaders = [changeArrayKeyNames(headers[0])];
 
@@ -90,7 +111,18 @@ export const printTable = (datas, fileName, onlyDictWords) => {
     const dataRow = [];
     const headersLength = headers[0].length;
     for (let j = 0; j < headersLength; j += 1) {
-      dataRow.push(datas[i][headers[0][j]]);
+      let dataField = datas[i][headers[0][j]];
+      if (typeof dataField === 'object') {
+        const keys = Object.keys(dataField);
+        const keysLength = keys.length;
+        for (let x = 0; x < keysLength; x += 1) {
+          if (possibleNameFields.includes(keys[x])) {
+            dataField = dataField[keys[x]];
+            break;
+          }
+        }
+      }
+      dataRow.push(dataField);
     }
     data.push(dataRow);
   }
@@ -111,7 +143,7 @@ const changeArrayKeyNames = (arr) => {
   const newArr = [];
   const arrLength = arr.length;
   for (let i = 0; i < arrLength; i += 1) {
-    const findedWord = dict[arr[i]];
+    const findedWord = dictToTranslate[arr[i]];
     if (findedWord) {
       newArr.push(findedWord);
     } else {
@@ -127,7 +159,7 @@ const changeObjectKeyNames = (obj, onlyDictWords) => {
   const objKeys = Object.keys(obj);
   const objKeysLength = objKeys.length;
   for (let i = 0; i < objKeysLength; i += 1) {
-    const findedWord = dict[objKeys[i]];
+    const findedWord = dictToTranslate[objKeys[i]];
     if (findedWord) {
       newObj[findedWord] = obj[objKeys[i]];
     } else if (!findedWord && !onlyDictWords) {
@@ -138,10 +170,34 @@ const changeObjectKeyNames = (obj, onlyDictWords) => {
   return newObj;
 };
 
-const dict = {
+const filterHeader = (headerArray) => {
+  const newArr = [];
+  headerArray.forEach((h) => {
+    if (dictToFilter[h] !== '') {
+      newArr.push(h);
+    }
+  });
+
+  return newArr;
+};
+
+const dictToFilter = {
+  orderId: '',
+  createdAt: '',
+  updatedAt: '',
+  countryIds: '',
+  roleId: '',
+  photoURL: '',
+  userId: '',
+  locationId: '',
+};
+
+const dictToTranslate = {
   firstName: 'First Name',
   lastName: 'Last Name',
   username: 'Username',
+  productName: 'Product Name',
+  roleName: 'Role',
   // role: 'Role',
   // country: 'Country',
   // active: 'Active',

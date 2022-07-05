@@ -11,7 +11,7 @@ const ordersSlice = createSlice({
   initialState: ordersAdapter.getInitialState({
     searchText: '',
     loading: false,
-    selectedCountry: '',
+    selectedCountry: '0',
     orderDialog: {
       type: 'new',
       props: {

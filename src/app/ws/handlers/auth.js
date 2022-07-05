@@ -26,6 +26,7 @@ const prepareUser = (ws) => {
   ws.sendMessage('event/findAll');
   ws.sendMessage('message/findAll');
   ws.sendMessage('country/findAll');
+  ws.sendMessage('country/findAvailable');
   ws.sendMessage('role/findAll');
   ws.sendMessage('label/findAll');
   ws.sendMessage('location/findAll');
