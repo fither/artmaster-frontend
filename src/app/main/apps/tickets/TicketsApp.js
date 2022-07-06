@@ -5,9 +5,9 @@ import { styled } from '@mui/material/styles';
 import TicketDialog from './TicketDialog';
 import TicketsHeader from './TicketsHeader';
 import TicketsList from './TicketsList';
-import TicketsSidebarContent from './TicketsSidebarContent';
 import reducer from './store';
 import TicketReplyDialog from './TicketReplyDialog';
+import TicketsToolbar from './TicketsToolbar';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -47,7 +47,7 @@ function TicketsApp(props) {
       <Root
         header={<TicketsHeader pageLayout={pageLayout} />}
         content={<TicketsList />}
-        leftSidebarContent={<TicketsSidebarContent />}
+        contentToolbar={<TicketsToolbar />}
         sidebarInner
         ref={pageLayout}
         innerScroll

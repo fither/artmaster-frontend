@@ -7,9 +7,9 @@ import { useSelector } from 'react-redux';
 import LocationsDialog from './LocationDialog';
 import LocationsHeader from './LocationsHeader';
 import LocationsList from './LocationsList';
-import LocationsSidebarContent from './LocationsSidebarContent';
 import reducer from './store';
 import { setLocationsLoading } from './store/locationsSlice';
+import LocationsToolbar from './LocationsToolbar';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -58,7 +58,7 @@ function LocationsApp(props) {
       <Root
         header={<LocationsHeader pageLayout={pageLayout} />}
         content={<LocationsList />}
-        leftSidebarContent={<LocationsSidebarContent />}
+        contentToolbar={<LocationsToolbar />}
         sidebarInner
         ref={pageLayout}
         innerScroll

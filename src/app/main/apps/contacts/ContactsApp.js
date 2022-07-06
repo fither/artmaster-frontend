@@ -5,8 +5,8 @@ import { styled } from '@mui/material/styles';
 import ContactDialog from './ContactDialog';
 import ContactsHeader from './ContactsHeader';
 import ContactsList from './ContactsList';
-import ContactsSidebarContent from './ContactsSidebarContent';
 import reducer from './store';
+import ContactsToolbar from './ContactsToolbar';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -46,7 +46,7 @@ function ContactsApp(props) {
       <Root
         header={<ContactsHeader pageLayout={pageLayout} />}
         content={<ContactsList />}
-        leftSidebarContent={<ContactsSidebarContent />}
+        contentToolbar={<ContactsToolbar />}
         sidebarInner
         ref={pageLayout}
         innerScroll

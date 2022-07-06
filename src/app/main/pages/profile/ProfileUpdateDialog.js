@@ -166,7 +166,11 @@ function ProfileUpdateDialog(props) {
                 </Tooltip>
 
                 <Tooltip title="Remove Photo" placement="bottom">
-                  <IconButton onClick={() => setValue('photoURL')}>
+                  <IconButton
+                    onClick={() =>
+                      setValue('photoURL', '', { shouldDirty: true, shouldValidate: true })
+                    }
+                  >
                     <Icon color="action">cancel</Icon>
                   </IconButton>
                 </Tooltip>

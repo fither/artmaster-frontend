@@ -47,11 +47,7 @@ function UserNavbarHeader(props) {
         <Avatar
           className="avatar w-72 h-72 p-8 box-content"
           alt="user photo"
-          src={
-            user.data.photoURL && user.data.photoURL !== ''
-              ? user.data.photoURL
-              : 'assets/images/avatars/profile.jpg'
-          }
+          src={user.data.photoURL}
         />
       </div>
     </StyledAppBar>

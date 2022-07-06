@@ -5,8 +5,8 @@ import { styled } from '@mui/material/styles';
 import UsersDialog from './UserDialog';
 import UsersHeader from './UsersHeader';
 import UsersList from './UsersList';
-import UsersSidebarContent from './UsersSidebarContent';
 import reducer from './store';
+import UsersToolbar from './UsersToolbar';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -48,7 +48,7 @@ function UsersApp(props) {
       <Root
         header={<UsersHeader pageLayout={pageLayout} />}
         content={<UsersList />}
-        leftSidebarContent={<UsersSidebarContent />}
+        contentToolbar={<UsersToolbar />}
         sidebarInner
         ref={pageLayout}
         innerScroll
