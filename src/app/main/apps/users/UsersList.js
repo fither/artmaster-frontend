@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { motion } from 'framer-motion';
 import FuseUtils from '@fuse/utils';
 import Avatar from '@mui/material/Avatar';
@@ -16,6 +17,7 @@ import {
 } from '@mui/material';
 import { WebSocketContext } from 'app/ws/WebSocket';
 import FuseLoading from '@fuse/core/FuseLoading';
+import { format } from 'date-fns';
 import UsersTable from './UsersTable';
 import { openEditUserDialog, selectUsers, setUsersLoading } from './store/usersSlice';
 
@@ -71,6 +73,32 @@ function UsersList(props) {
           <div className="flex items-center">
             {['country-admin', 'super-admin'].includes(user.role.name) &&
               renderActiveButton(row.original)}
+          </div>
+        ),
+      },
+      {
+        Header: 'Last Login',
+        accessor: '',
+        sortable: true,
+        Cell: ({ row }) => (
+          <div className="flex items-center">
+            {row.original.lastSignInWithToken
+              ? format(new Date(row.original.lastSignInWithToken), 'dd-MM-yyyy HH:mm:ss')
+              : row.original.lastSignIn
+              ? format(new Date(row.original.lastSignIn), 'dd-MM-yyyy HH:mm:ss')
+              : ''}
+          </div>
+        ),
+      },
+      {
+        Header: 'Last Logout',
+        accessor: '',
+        sortable: true,
+        Cell: ({ row }) => (
+          <div className="flex items-center">
+            {row.original.lastLogout
+              ? format(new Date(row.original.lastLogout), 'dd-MM-yyyy HH:mm:ss')
+              : ''}
           </div>
         ),
       },
