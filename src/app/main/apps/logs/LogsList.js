@@ -14,6 +14,7 @@ function LogsList(props) {
   const logs = useSelector(selectLogs);
   const searchText = useSelector(({ logsApp }) => logsApp.logs.searchText);
   const loading = useSelector(({ logsApp }) => logsApp.logs.loading);
+  const selectedLogFilterType = useSelector(({ logsApp }) => logsApp.logs.logFilterType);
   const ws = useContext(WebSocketContext);
 
   const [filteredData, setFilteredData] = useState(null);
@@ -68,15 +69,23 @@ function LogsList(props) {
   useEffect(() => {
     function getFilteredArray(entities, _searchText) {
       if (_searchText.length === 0) {
-        return logs;
+        return getFilteredArrayByType(logs);
       }
-      return FuseUtils.filterArrayByString(logs, _searchText);
+      return FuseUtils.filterArrayByString(getFilteredArrayByType(logs), _searchText);
+    }
+
+    function getFilteredArrayByType(entities) {
+      if (selectedLogFilterType !== '-') {
+        return entities.filter((e) => e.type === selectedLogFilterType);
+      }
+
+      return entities;
     }
 
     if (logs) {
       setFilteredData(getFilteredArray(logs, searchText));
     }
-  }, [logs, searchText]);
+  }, [logs, searchText, selectedLogFilterType]);
 
   useEffect(() => {
     if (!loading) {

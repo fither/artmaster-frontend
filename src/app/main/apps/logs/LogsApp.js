@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import LogsHeader from './LogsHeader';
 import LogsList from './LogsList';
 import reducer from './store';
+import LogsToolbar from './LogsToolbar';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -44,6 +45,7 @@ function Logsapp(props) {
       <Root
         header={<LogsHeader pageLayout={pageLayout} />}
         content={<LogsList />}
+        contentToolbar={<LogsToolbar />}
         ref={pageLayout}
         innerScroll
       />

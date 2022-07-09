@@ -10,6 +10,7 @@ const logsSlice = createSlice({
   name: 'logsApp/logs',
   initialState: logsAdapter.getInitialState({
     searchText: '',
+    logFilterType: '-',
     loading: false,
   }),
   reducers: {
@@ -25,10 +26,13 @@ const logsSlice = createSlice({
     setLogsLoading: (state, action) => {
       state.loading = action.payload;
     },
+    setLogFilterType: (state, action) => {
+      state.logFilterType = action.payload;
+    },
   },
   extraReducers: {},
 });
 
-export const { setLogsSearchText, setLogs, setLogsLoading } = logsSlice.actions;
+export const { setLogsSearchText, setLogs, setLogsLoading, setLogFilterType } = logsSlice.actions;
 
 export default logsSlice.reducer;
