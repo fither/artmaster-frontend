@@ -10,6 +10,7 @@ import LocationsList from './LocationsList';
 import reducer from './store';
 import { setLocationsLoading } from './store/locationsSlice';
 import LocationsToolbar from './LocationsToolbar';
+import ClassroomDialog from './ClassroomDialog';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -64,6 +65,7 @@ function LocationsApp(props) {
         innerScroll
       />
       <LocationsDialog />
+      <ClassroomDialog />
     </>
   );
 }

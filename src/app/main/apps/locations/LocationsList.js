@@ -3,7 +3,7 @@ import FuseUtils from '@fuse/utils';
 import Icon from '@mui/material/Icon';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { useMemo, useEffect, useState, useContext } from 'react';
+import { useMemo, useEffect, useState, useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeDialog, openDialog } from 'app/store/fuse/dialogSlice';
 import {
@@ -17,6 +17,7 @@ import { WebSocketContext } from 'app/ws/WebSocket';
 import LocationsMultiSelectMenu from './LocationsMultiSelectMenu';
 import LocationsTable from './LocationsTable';
 import { openEditLocationDialog, selectLocations } from './store/locationsSlice';
+import { openClassroomDialog } from './store/classroomsSlice';
 
 function LocationsList(props) {
   const dispatch = useDispatch();
@@ -25,6 +26,49 @@ function LocationsList(props) {
   const ws = useContext(WebSocketContext);
 
   const [filteredData, setFilteredData] = useState(null);
+
+  const handleRemove = useCallback(
+    (ev, id) => {
+      ev.stopPropagation();
+      dispatch(
+        openDialog({
+          children: (
+            <>
+              <DialogTitle id="alert-dialog-title">Confirm Delete Location</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-text">
+                  Do you confirm deleting location?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => {
+                    ws.sendMessage('location/remove', id);
+                    dispatch(closeDialog());
+                  }}
+                  color="warning"
+                >
+                  Yes
+                </Button>
+                <Button onClick={() => dispatch(closeDialog())} color="primary">
+                  No
+                </Button>
+              </DialogActions>
+            </>
+          ),
+        })
+      );
+    },
+    [dispatch, ws]
+  );
+
+  const handleEditClassroom = useCallback(
+    (ev, id) => {
+      ev.stopPropagation();
+      dispatch(openClassroomDialog(id));
+    },
+    [dispatch]
+  );
 
   const columns = useMemo(
     () => [
@@ -67,47 +111,17 @@ function LocationsList(props) {
         sortable: false,
         Cell: ({ row }) => (
           <div className="flex items-center">
-            <IconButton
-              onClick={(ev) => {
-                ev.stopPropagation();
-                dispatch(
-                  openDialog({
-                    children: (
-                      <>
-                        <DialogTitle id="alert-dialog-title">Confirm Delete Location</DialogTitle>
-                        <DialogContent>
-                          <DialogContentText id="alert-dialog-text">
-                            Do you confirm deleting location?
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            onClick={() => {
-                              ws.sendMessage('location/remove', row.original.id);
-                              dispatch(closeDialog());
-                            }}
-                            color="warning"
-                          >
-                            Yes
-                          </Button>
-                          <Button onClick={() => dispatch(closeDialog())} color="primary">
-                            No
-                          </Button>
-                        </DialogActions>
-                      </>
-                    ),
-                  })
-                );
-              }}
-              size="large"
-            >
+            <IconButton onClick={(ev) => handleEditClassroom(ev, row.original.id)}>
+              <Icon>edit</Icon>
+            </IconButton>
+            <IconButton onClick={(ev) => handleRemove(ev, row.original.id)} size="large">
               <Icon>delete</Icon>
             </IconButton>
           </div>
         ),
       },
     ],
-    [dispatch, ws]
+    [handleEditClassroom, handleRemove]
   );
 
   useEffect(() => {

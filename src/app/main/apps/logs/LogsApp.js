@@ -37,7 +37,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
   },
 }));
 
-function Logsapp(props) {
+function LogsApp(props) {
   const pageLayout = useRef(null);
 
   return (
@@ -53,4 +53,4 @@ function Logsapp(props) {
   );
 }
 
-export default withReducer('logsApp', reducer)(Logsapp);
+export default withReducer('logsApp', reducer)(LogsApp);

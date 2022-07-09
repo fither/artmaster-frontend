@@ -80,8 +80,8 @@ function OrdersTable(props) {
   }
 
   function generateOrderObj(orderValue) {
-    const { id, productName } = orderValue;
-    return { id, productName };
+    const { id, productName, customerName } = orderValue;
+    return { id, productName, customerName };
   }
 
   function handleCheck(event, n) {
