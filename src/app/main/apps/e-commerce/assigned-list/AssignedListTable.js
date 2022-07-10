@@ -207,6 +207,10 @@ function AssignmentsTable(props) {
                       {n.productName}
                     </TableCell>
 
+                    <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
+                      {n.customerName}
+                    </TableCell>
+
                     <TableCell className="p-4 md:p-16" component="th" scope="row">
                       {n.location.className}
                     </TableCell>

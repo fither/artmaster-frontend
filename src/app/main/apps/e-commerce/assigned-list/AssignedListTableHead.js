@@ -47,6 +47,13 @@ const rows = [
     sort: true,
   },
   {
+    id: 'customer-name',
+    align: 'left',
+    disablePadding: false,
+    label: 'Customer Name',
+    sort: true,
+  },
+  {
     id: 'class-name',
     align: 'left',
     disablePadding: false,
