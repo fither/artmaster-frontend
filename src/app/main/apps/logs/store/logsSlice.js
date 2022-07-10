@@ -11,6 +11,10 @@ const logsSlice = createSlice({
   initialState: logsAdapter.getInitialState({
     searchText: '',
     logFilterType: '-',
+    rowsPerPage: 10,
+    dataCount: 0,
+    pageCount: 1,
+    pageIndex: 0,
     loading: false,
   }),
   reducers: {
@@ -21,7 +25,9 @@ const logsSlice = createSlice({
       prepare: (event) => ({ payload: event.target.value || '' }),
     },
     setLogs: (state, action) => {
-      logsAdapter.setAll(state, action.payload);
+      logsAdapter.setAll(state, action.payload.rows);
+      state.dataCount = action.payload.count;
+      state.pageCount = Math.floor(action.payload.count / state.rowsPerPage);
     },
     setLogsLoading: (state, action) => {
       state.loading = action.payload;
@@ -29,10 +35,23 @@ const logsSlice = createSlice({
     setLogFilterType: (state, action) => {
       state.logFilterType = action.payload;
     },
+    setRowsPerPage: (state, action) => {
+      state.rowsPerPage = action.payload;
+    },
+    setPageIndex: (state, action) => {
+      state.pageIndex = action.payload;
+    },
   },
   extraReducers: {},
 });
 
-export const { setLogsSearchText, setLogs, setLogsLoading, setLogFilterType } = logsSlice.actions;
+export const {
+  setLogsSearchText,
+  setLogs,
+  setLogsLoading,
+  setLogFilterType,
+  setRowsPerPage,
+  setPageIndex,
+} = logsSlice.actions;
 
 export default logsSlice.reducer;

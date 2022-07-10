@@ -11,7 +11,9 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import clsx from 'clsx';
+import { useDispatch, useSelector } from 'react-redux';
 import LogsTablePaginationActions from './LogsTablePaginationActions';
+import { setPageIndex, setRowsPerPage } from './store/logsSlice';
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
   const defaultRef = useRef();
@@ -29,6 +31,11 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
 });
 
 const EnhancedTable = ({ columns, data, onRowClick }) => {
+  const rowsPerPage = useSelector(({ logsApp }) => logsApp.logs.rowsPerPage);
+  const currPage = useSelector(({ logsApp }) => logsApp.logs.pageIndex);
+  const count = useSelector(({ logsApp }) => logsApp.logs.dataCount);
+  const dispatch = useDispatch();
+
   const {
     getTableProps,
     headerGroups,
@@ -50,11 +57,13 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
   );
 
   const handleChangePage = (event, newPage) => {
-    gotoPage(newPage);
+    dispatch(setPageIndex(newPage));
+    // gotoPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(Number(event.target.value));
+    dispatch(setRowsPerPage(event.target.value));
+    // setPageSize(Number(event.target.value));
   };
 
   // Render the UI for your table
@@ -115,11 +124,11 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
         classes={{
           root: 'shrink-0 border-t-1',
         }}
-        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: data.length + 1 }]}
+        rowsPerPageOptions={[5, 10]}
         colSpan={5}
-        count={data.length}
-        rowsPerPage={pageSize}
-        page={pageIndex}
+        count={count}
+        rowsPerPage={rowsPerPage}
+        page={currPage}
         SelectProps={{
           inputProps: { 'aria-label': 'rows per page' },
           native: false,

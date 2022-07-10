@@ -15,6 +15,8 @@ function LogsList(props) {
   const searchText = useSelector(({ logsApp }) => logsApp.logs.searchText);
   const loading = useSelector(({ logsApp }) => logsApp.logs.loading);
   const selectedLogFilterType = useSelector(({ logsApp }) => logsApp.logs.logFilterType);
+  const rowsPerPage = useSelector(({ logsApp }) => logsApp.logs.rowsPerPage);
+  const currPage = useSelector(({ logsApp }) => logsApp.logs.pageIndex);
   const ws = useContext(WebSocketContext);
 
   const [filteredData, setFilteredData] = useState(null);
@@ -66,40 +68,55 @@ function LogsList(props) {
     []
   );
 
-  useEffect(() => {
-    function getFilteredArray(entities, _searchText) {
-      if (_searchText.length === 0) {
-        return getFilteredArrayByType(logs);
-      }
-      return FuseUtils.filterArrayByString(getFilteredArrayByType(logs), _searchText);
-    }
+  // useEffect(() => {
+  //   function getFilteredArray(entities, _searchText) {
+  //     if (_searchText.length === 0) {
+  //       return getFilteredArrayByType(logs);
+  //     }
+  //     return FuseUtils.filterArrayByString(getFilteredArrayByType(logs), _searchText);
+  //   }
 
-    function getFilteredArrayByType(entities) {
-      if (selectedLogFilterType !== '-') {
-        return entities.filter((e) => e.type === selectedLogFilterType);
-      }
+  //   function getFilteredArrayByType(entities) {
+  //     if (selectedLogFilterType !== '-') {
+  //       return entities.filter((e) => e.type === selectedLogFilterType);
+  //     }
 
-      return entities;
-    }
+  //     return entities;
+  //   }
 
-    if (logs) {
-      setFilteredData(getFilteredArray(logs, searchText));
-    }
-  }, [logs, searchText, selectedLogFilterType]);
+  //   if (logs) {
+  //     setFilteredData(getFilteredArray(logs, searchText));
+  //   }
+  // }, [logs, searchText, selectedLogFilterType]);
 
   useEffect(() => {
     if (!loading) {
       dispatch(setLogsLoading(true));
-      ws.sendMessage('log/findAll');
+      ws.sendMessage('log/findAll', {
+        pageIndex: currPage,
+        limit: rowsPerPage,
+        logType: selectedLogFilterType,
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, ws]);
+  }, [selectedLogFilterType, rowsPerPage, currPage]);
 
-  if (!filteredData) {
+  // useEffect(() => {
+  //   if (!loading) {
+  //     dispatch(setLogsLoading(true));
+  //     ws.sendMessage('log/findAll', {
+  //       pageIndex: currPage,
+  //       limit: rowsPerPage,
+  //       logType: selectedLogFilterType,
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [dispatch, ws]);
+
+  if (!logs) {
     return null;
   }
 
-  if (filteredData.length === 0 && !loading) {
+  if (logs.length === 0 && !loading) {
     return (
       <div className="flex flex-1 items-center justify-center h-full">
         <Typography color="textSecondary" variant="h5">
@@ -119,7 +136,7 @@ function LogsList(props) {
       animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
       className="flex flex-auto w-full max-h-full"
     >
-      <LogsTable columns={columns} data={filteredData} />
+      <LogsTable columns={columns} data={logs} />
     </motion.div>
   );
 }
