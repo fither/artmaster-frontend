@@ -4,12 +4,13 @@ import { useContext, useEffect, useRef } from 'react';
 import { styled } from '@mui/material/styles';
 import { WebSocketContext } from 'app/ws/WebSocket';
 import { useSelector } from 'react-redux';
-import LocationsDialog from './LocationDialog';
-import LocationsHeader from './LocationsHeader';
-import LocationsList from './LocationsList';
+import ClassroomsAssignDialog from './ClassroomsAssignDialog';
+import ClassroomsHeader from './ClassroomsHeader';
+import ClassroomsList from './ClassroomsList';
 import reducer from './store';
-import { setLocationsLoading } from './store/locationsSlice';
-import LocationsToolbar from './LocationsToolbar';
+import { setClassroomsLoading } from './store/classroomsSlice';
+import ClassroomsToolbar from './ClassroomsToolbar';
+import ClassroomsDialog from './ClassroomsDialog';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -41,31 +42,32 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
   },
 }));
 
-function LocationsApp(props) {
+function ClassroomsApp(props) {
   const pageLayout = useRef(null);
   const ws = useContext(WebSocketContext);
-  const loading = useSelector(({ locationsApp }) => locationsApp.locations.loading);
+  const loading = useSelector(({ classroomsApp }) => classroomsApp.classrooms.loading);
 
   useEffect(() => {
     if (!loading) {
-      setLocationsLoading(true);
-      ws.sendMessage('location/findAll');
+      setClassroomsLoading(true);
+      ws.sendMessage('classroom/findAll');
     }
   }, [loading, ws]);
 
   return (
     <>
       <Root
-        header={<LocationsHeader pageLayout={pageLayout} />}
-        content={<LocationsList />}
-        contentToolbar={<LocationsToolbar />}
+        header={<ClassroomsHeader pageLayout={pageLayout} />}
+        content={<ClassroomsList />}
+        contentToolbar={<ClassroomsToolbar />}
         sidebarInner
         ref={pageLayout}
-        innerScroll
+        innerScrool
       />
-      <LocationsDialog />
+      <ClassroomsAssignDialog />
+      <ClassroomsDialog />
     </>
   );
 }
 
-export default withReducer('locationsApp', reducer)(LocationsApp);
+export default withReducer('classroomsApp', reducer)(ClassroomsApp);

@@ -23,7 +23,10 @@ import { Autocomplete, DialogContentText, DialogTitle, MenuItem } from '@mui/mat
 import { closeDialog, openDialog } from 'app/store/fuse/dialogSlice';
 import { Box } from '@mui/system';
 import { styled } from '@mui/material/styles';
-import { closeClassroomDialog, selectClassrooms } from './store/classroomsSlice';
+import {
+  closeClassroomAssignmentDialog,
+  selectClassroomAssignments,
+} from './store/assignmentsSlice';
 
 const Root = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -65,12 +68,12 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-function ClassroomDialog(props) {
+function ClassroomsAssignDialog(props) {
   const dispatch = useDispatch();
-  const assignments = useSelector(selectClassrooms);
+  const assignments = useSelector(selectClassroomAssignments);
   const ws = useContext(WebSocketContext);
-  const classroomDialog = useSelector(
-    ({ locationsApp }) => locationsApp.classrooms.classroomDialog
+  const assignmentDialog = useSelector(
+    ({ classroomsApp }) => classroomsApp.assignments.assignmentDialog
   );
   const [users, setUsers] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
@@ -80,19 +83,19 @@ function ClassroomDialog(props) {
   const [selectedDesk, setSelectedDesk] = useState(null);
 
   const initDialog = useCallback(() => {
-    if (classroomDialog.data) {
-      ws.sendMessage('assignment/findAllByLocationId', classroomDialog.data);
+    if (assignmentDialog.data) {
+      ws.sendMessage('assignment/findAllByClassroomId', assignmentDialog.data);
     }
-  }, [classroomDialog.data, ws]);
+  }, [assignmentDialog.data, ws]);
 
   useEffect(() => {
-    if (classroomDialog.props.open) {
+    if (assignmentDialog.props.open) {
       initDialog();
     }
-  }, [classroomDialog.props.open, initDialog]);
+  }, [assignmentDialog.props.open, initDialog]);
 
   function closeComposeDialog() {
-    dispatch(closeClassroomDialog());
+    dispatch(closeClassroomAssignmentDialog());
   }
 
   return (
@@ -100,7 +103,7 @@ function ClassroomDialog(props) {
       classes={{
         paper: 'm-24',
       }}
-      {...classroomDialog.props}
+      {...assignmentDialog.props}
       onClose={closeComposeDialog}
       fullWidth
       maxWidth="lg"
@@ -140,4 +143,4 @@ function ClassroomDialog(props) {
   );
 }
 
-export default ClassroomDialog;
+export default ClassroomsAssignDialog;

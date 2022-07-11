@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import FuseUtils from '@fuse/utils';
 import Typography from '@mui/material/Typography';
 import { useMemo, useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -68,27 +67,6 @@ function LogsList(props) {
     []
   );
 
-  // useEffect(() => {
-  //   function getFilteredArray(entities, _searchText) {
-  //     if (_searchText.length === 0) {
-  //       return getFilteredArrayByType(logs);
-  //     }
-  //     return FuseUtils.filterArrayByString(getFilteredArrayByType(logs), _searchText);
-  //   }
-
-  //   function getFilteredArrayByType(entities) {
-  //     if (selectedLogFilterType !== '-') {
-  //       return entities.filter((e) => e.type === selectedLogFilterType);
-  //     }
-
-  //     return entities;
-  //   }
-
-  //   if (logs) {
-  //     setFilteredData(getFilteredArray(logs, searchText));
-  //   }
-  // }, [logs, searchText, selectedLogFilterType]);
-
   useEffect(() => {
     if (!loading) {
       dispatch(setLogsLoading(true));
@@ -98,19 +76,8 @@ function LogsList(props) {
         logType: selectedLogFilterType,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLogFilterType, rowsPerPage, currPage]);
-
-  // useEffect(() => {
-  //   if (!loading) {
-  //     dispatch(setLogsLoading(true));
-  //     ws.sendMessage('log/findAll', {
-  //       pageIndex: currPage,
-  //       limit: rowsPerPage,
-  //       logType: selectedLogFilterType,
-  //     });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [dispatch, ws]);
 
   if (!logs) {
     return null;

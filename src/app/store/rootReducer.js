@@ -7,6 +7,7 @@ import todoApp from 'app/main/apps/todo/store';
 import calendarApp from 'app/main/apps/calendar/store';
 import usersApp from 'app/main/apps/users/store';
 import locationsApp from 'app/main/apps/locations/store';
+import classroomsApp from 'app/main/apps/classrooms/store';
 import fuse from './fuse';
 import i18n from './i18nSlice';
 
@@ -22,6 +23,7 @@ const createReducer = (asyncReducers) => (state, action) => {
     calendarApp,
     usersApp,
     locationsApp,
+    classroomsApp,
     ...asyncReducers,
   });
 

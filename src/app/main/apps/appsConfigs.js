@@ -13,6 +13,7 @@ import LocationsAppConfig from './locations/LocationsAppConfig';
 import TicketsAppConfig from './tickets/TicketsAppConfig';
 import AnnouncementAppConfig from './announcement/AnnouncementAppConfig';
 import LogsAppConfig from './logs/LogsAppConfig';
+import ClassroomsAppConfig from './classrooms/ClassroomsAppConfig';
 
 const appsConfigs = [
   AnalyticsDashboardAppConfig,
@@ -30,6 +31,7 @@ const appsConfigs = [
   TicketsAppConfig,
   AnnouncementAppConfig,
   LogsAppConfig,
+  ClassroomsAppConfig,
 ];
 
 export default appsConfigs;

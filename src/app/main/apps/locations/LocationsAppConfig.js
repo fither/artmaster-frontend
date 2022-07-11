@@ -5,7 +5,7 @@ const LocationsApp = lazy(() => import('./LocationsApp'));
 
 const LocationsAppConfig = {
   settings: {
-    layoud: {
+    layout: {
       config: {},
     },
   },

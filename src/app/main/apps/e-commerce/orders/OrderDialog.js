@@ -17,20 +17,24 @@ import * as yup from 'yup';
 import { MenuItem, TextField } from '@mui/material';
 import { closeNewOrderDialog } from '../store/ordersSlice';
 import { selectLocations } from '../../locations/store/locationsSlice';
+import { selectClassrooms } from '../../classrooms/store/classroomsSlice';
 
 const defaultValues = {
   locationId: '',
+  classroomId: '',
   orderIds: [],
 };
 
 const schema = yup.object().shape({
   locationId: yup.string().required('You must select a location'),
+  classroomId: yup.string().required('You must select a classroom'),
 });
 
 function OrderDialog(props) {
   const ordersDialog = useSelector(({ eCommerceApp }) => eCommerceApp.orders.orderDialog);
   const dispatch = useDispatch();
   const locations = useSelector(selectLocations);
+  const classrooms = useSelector(selectClassrooms);
   const ws = useContext(WebSocketContext);
 
   const { control, watch, reset, handleSubmit, formState, getValues } = useForm({
@@ -42,10 +46,17 @@ function OrderDialog(props) {
   const { isValid, dirtyFields, errors } = formState;
 
   const locationId = watch('locationId');
+  const classroomId = watch('classroomId');
+
+  useEffect(() => {
+    if (locationId) {
+      ws.sendMessage('classroom/findAll', locationId);
+    }
+  }, [locationId, ws]);
 
   const initDialog = useCallback(() => {
     if (ordersDialog.data) {
-      reset({ ...ordersDialog.data });
+      reset({ ...defaultValues, ...ordersDialog.data });
     }
   }, [ordersDialog.data, reset]);
 
@@ -119,6 +130,37 @@ function OrderDialog(props) {
               )}
             />
           </div>
+
+          {classrooms && classrooms.length > 0 && (
+            <div className="flex">
+              <div className="min-w-48 pt-20">
+                <Icon color="action">account_circle</Icon>
+              </div>
+              <Controller
+                control={control}
+                name="classroomId"
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    className="mb-24"
+                    label="Classroom"
+                    id="classroomId"
+                    variant="outlined"
+                    select
+                    fullWidth
+                  >
+                    {classrooms.map((classroom) => {
+                      return (
+                        <MenuItem key={classroom.id} value={classroom.id}>
+                          {classroom.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </TextField>
+                )}
+              />
+            </div>
+          )}
         </DialogContent>
 
         <DialogActions className="justify-between p-4 pb-16">

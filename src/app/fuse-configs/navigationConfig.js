@@ -94,6 +94,14 @@ const navigationConfig = [
         url: 'apps/locations',
       },
       {
+        id: 'classroom',
+        title: 'Classrooms',
+        translate: 'CLASSROOMS',
+        type: 'item',
+        icon: 'flag',
+        url: 'apps/classrooms',
+      },
+      {
         id: 'mail',
         title: 'Mail',
         translate: 'MAIL',

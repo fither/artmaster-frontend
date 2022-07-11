@@ -5,6 +5,7 @@ const locale = {
   ECOMMERCE: 'E-Ticaret',
   APPOINTMENT: 'Appointment',
   ANNOUNCEMENT: 'Announcement',
+  CLASSROOMS: 'Classrooms',
   LOGS: 'Logs',
   TICKET: 'Ticket',
   ACADEMY: 'Akademi',
