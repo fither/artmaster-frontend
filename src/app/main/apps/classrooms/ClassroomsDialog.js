@@ -28,7 +28,7 @@ import { closeClassroomDialog } from './store/classroomsSlice';
 
 const defaultValues = {
   name: '',
-  quota: '',
+  quota: 0,
   locationId: '',
 };
 

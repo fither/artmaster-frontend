@@ -46,6 +46,7 @@ function LogsApp(props) {
         header={<LogsHeader pageLayout={pageLayout} />}
         content={<LogsList />}
         contentToolbar={<LogsToolbar />}
+        sidebarInner
         ref={pageLayout}
         innerScroll
       />

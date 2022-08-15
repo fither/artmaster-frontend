@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import Typography from '@mui/material/Typography';
-import { useMemo, useEffect, useState, useContext } from 'react';
+import { useMemo, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { WebSocketContext } from 'app/ws/WebSocket';
 import FuseLoading from '@fuse/core/FuseLoading';
@@ -17,8 +17,6 @@ function LogsList(props) {
   const rowsPerPage = useSelector(({ logsApp }) => logsApp.logs.rowsPerPage);
   const currPage = useSelector(({ logsApp }) => logsApp.logs.pageIndex);
   const ws = useContext(WebSocketContext);
-
-  const [filteredData, setFilteredData] = useState(null);
 
   const columns = useMemo(
     () => [

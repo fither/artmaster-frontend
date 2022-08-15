@@ -33,7 +33,10 @@ export default ({ children }) => {
     if (process.env.NODE_ENV === 'development') {
       socket = new WebSocket('ws://localhost:8080', 'echo-protocol');
     } else {
-      socket = new WebSocket('wss://artmasterclass.azurewebsites.net', 'echo-protocol');
+      socket = new WebSocket(
+        'wss://book-management-system-backend.herokuapp.com/',
+        'echo-protocol'
+      );
     }
     console.log('Trying Reconnect');
     socket.onopen = () => {

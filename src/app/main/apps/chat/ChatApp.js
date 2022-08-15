@@ -152,6 +152,9 @@ function ChatApp(props) {
     let unread = 0;
     if (chat) {
       Object.keys(chat).forEach((c) => {
+        if (!chat[c]) {
+          return;
+        }
         chat[c].forEach((m) => {
           if (m.unread) {
             unread += 1;

@@ -37,6 +37,7 @@ const Root = styled('div')(({ theme }) => ({
     backgroundSize: 'contain',
     width: '835px',
     height: '575px',
+    position: 'relative',
     '& .classroom-user-wrapper': {
       display: 'flex',
       justifyContent: 'center',
@@ -112,8 +113,8 @@ function ClassroomsAssignDialog(props) {
         <Root>
           <div className="classroom-wrapper">
             {users.map((user, index) => {
-              const left = `${33 + (index % 5) * 10}rem`;
-              const top = `${(index + 1 > 15 ? 22 : 14) + Math.floor(index / 5) * 5.25}rem`;
+              const left = `${31 + (index % 5) * 10}rem`;
+              const top = `${(index + 1 > 15 ? 20 : 12) + Math.floor(index / 5) * 5.25}rem`;
               const className = `classroom-user-wrapper ${
                 // eslint-disable-next-line no-nested-ternary
                 user % 3 === 0 ? 'assigned-male' : user % 3 === 1 ? 'assigned-female' : ''

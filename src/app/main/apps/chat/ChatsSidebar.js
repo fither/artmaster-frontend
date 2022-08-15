@@ -69,6 +69,9 @@ function ChatsSidebar(props) {
       Object.keys(messages).forEach((_chat) => {
         const findedContact = contacts.find((contact) => `${contact.id}` === `${_chat}`);
         if (findedContact) {
+          if (!messages[_chat]) {
+            return;
+          }
           const messagesLength = messages[_chat].length;
           const newFindedContact = { ...findedContact };
           newFindedContact.lastMessage = messages[_chat][messagesLength - 1];
