@@ -1,7 +1,9 @@
 import {
   addClassroom,
+  openCustomerInfoDialog,
   removeClassroom,
   setClassrooms,
+  setCustomerInfoLoading,
   updateClassroom,
 } from 'app/main/apps/classrooms/store/classroomsSlice';
 
@@ -18,6 +20,10 @@ const handleClassroom = ({ eventAction, data, dispatch, ws }) => {
       break;
     case 'remove':
       dispatch(removeClassroom(data));
+      break;
+    case 'getCustomerInfo':
+      dispatch(openCustomerInfoDialog(data));
+      dispatch(setCustomerInfoLoading(false));
       break;
     default:
       break;

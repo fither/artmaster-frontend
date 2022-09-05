@@ -16,7 +16,11 @@ import FuseLoading from '@fuse/core/FuseLoading';
 import { WebSocketContext } from 'app/ws/WebSocket';
 import AssignmentsTableHead from './AssignedListTableHead';
 import AssignmentDialog from './AssignedListDialog';
-import { selectAssignments, setAssignmentsLoading } from '../store/assignmentsSlice';
+import {
+  openEditAssignmentDialog,
+  selectAssignments,
+  setAssignmentsLoading,
+} from '../store/assignmentsSlice';
 
 function AssignmentsTable(props) {
   const dispatch = useDispatch();
@@ -78,6 +82,7 @@ function AssignmentsTable(props) {
   }
 
   function handleClick(item) {
+    dispatch(openEditAssignmentDialog(item));
     // const urlRegex = /https:\/\/[\w]+.[\w]+[.]+[\w]+\//;
     // const url = item._links.self[0].href;
     // const matches = url.match(urlRegex)[0];
@@ -114,6 +119,16 @@ function AssignmentsTable(props) {
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(event.target.value);
+  }
+
+  function handleDone(event, id) {
+    dispatch(setAssignmentsLoading(true));
+    ws.sendMessage('assignment/toggleDone', id);
+  }
+
+  function handleFlagged(event, id) {
+    dispatch(setAssignmentsLoading(true));
+    ws.sendMessage('assignment/toggleFlag', id);
   }
 
   if (loading) {
@@ -156,8 +171,8 @@ function AssignmentsTable(props) {
                     case 'id': {
                       return parseInt(o.id, 10);
                     }
-                    case 'order-id': {
-                      return o.orderId;
+                    case 'customer-name': {
+                      return o.customerName;
                     }
                     case 'product-name': {
                       return o.productName;
@@ -199,20 +214,62 @@ function AssignmentsTable(props) {
                       {n.id}
                     </TableCell>
 
-                    <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-                      {n.orderId}
+                    <TableCell className="p-4 md:p-16" component="th" scope="row">
+                      <Checkbox
+                        checked={n.done}
+                        onClick={(event) => event.stopPropagation()}
+                        onChange={(event) => handleDone(event, n.id)}
+                      />
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-                      {n.productName}
+                      <span
+                        style={{
+                          textDecoration: n.done ? 'line-through' : 'initial',
+                        }}
+                      >
+                        {n.productName}
+                      </span>
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-                      {n.customerName}
+                      <span
+                        style={{
+                          textDecoration: n.done ? 'line-through' : 'initial',
+                        }}
+                      >
+                        {n.bookingDate && n.bookingDate !== '-'
+                          ? new Date(n.bookingDate).toLocaleString()
+                          : '-'}
+                      </span>
+                    </TableCell>
+
+                    <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
+                      <span
+                        style={{
+                          textDecoration: n.done ? 'line-through' : 'initial',
+                        }}
+                      >
+                        {n.customerName}
+                      </span>
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16" component="th" scope="row">
-                      {n.location.className}
+                      <span
+                        style={{
+                          textDecoration: n.done ? 'line-through' : 'initial',
+                        }}
+                      >
+                        {n.location.className}
+                      </span>
+                    </TableCell>
+
+                    <TableCell className="p-4 md:p-16" component="th" scope="row">
+                      <Checkbox
+                        checked={n.flagged}
+                        onClick={(event) => event.stopPropagation()}
+                        onChange={(event) => handleFlagged(event, n.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 );

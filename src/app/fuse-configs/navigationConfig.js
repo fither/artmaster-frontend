@@ -18,26 +18,33 @@ const navigationConfig = [
     icon: 'apps',
     children: [
       {
-        id: 'dashboards',
-        title: 'Dashboards',
-        translate: 'DASHBOARDS',
-        type: 'collapse',
+        id: 'summary-dashboard',
+        title: 'Summary',
+        type: 'item',
         icon: 'dashboard',
-        children: [
-          {
-            id: 'analytics-dashboard',
-            title: 'Analytics',
-            type: 'item',
-            url: 'apps/dashboards/analytics',
-          },
-          {
-            id: 'summary-dashboard',
-            title: 'Summary',
-            type: 'item',
-            url: 'apps/dashboards/summary',
-          },
-        ],
+        url: 'apps/dashboards/summary',
       },
+      // {
+      //   id: 'dashboards',
+      //   title: 'Dashboards',
+      //   translate: 'DASHBOARDS',
+      //   type: 'collapse',
+      //   icon: 'dashboard',
+      //   children: [
+      //     {
+      //       id: 'analytics-dashboard',
+      //       title: 'Analytics',
+      //       type: 'item',
+      //       url: 'apps/dashboards/analytics',
+      //     },
+      //     {
+      //       id: 'summary-dashboard',
+      //       title: 'Summary',
+      //       type: 'item',
+      //       url: 'apps/dashboards/summary',
+      //     },
+      //   ],
+      // },
       {
         id: 'users',
         title: 'Users',

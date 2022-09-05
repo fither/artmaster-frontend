@@ -19,11 +19,19 @@ export const {
 
 const summariesSlice = createSlice({
   name: 'summaryDashboardApp/summaries',
-  initialState: summariesAdapter.getInitialState(),
-  reducers: {},
+  initialState: summariesAdapter.getInitialState({
+    selectedCountryCode: '',
+  }),
+  reducers: {
+    setSelectedCountryCode: (state, action) => {
+      state.selectedCountryCode = action.payload;
+    },
+  },
   extraReducers: {
     [getSummaries.fulfilled]: summariesAdapter.setAll,
   },
 });
+
+export const { setSelectedCountryCode } = summariesSlice.actions;
 
 export default summariesSlice.reducer;

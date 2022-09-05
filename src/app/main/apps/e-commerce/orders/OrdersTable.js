@@ -80,8 +80,9 @@ function OrdersTable(props) {
   }
 
   function generateOrderObj(orderValue) {
-    const { id, productName, customerName } = orderValue;
-    return { id, productName, customerName };
+    const { id, productName, customerId, customerName, bookingDate, countryCode } = orderValue;
+    const newBookingDate = bookingDate.trim();
+    return { id, productName, customerId, customerName, bookingDate: newBookingDate, countryCode };
   }
 
   function handleCheck(event, n) {

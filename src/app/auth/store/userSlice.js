@@ -23,7 +23,7 @@ export const setUserData = (user) => async (dispatch, getState) => {
     settingsConfig.loginRedirectUrl = user.data.settings.loginRedirectUrl;
   }
 
-  settingsConfig.loginRedirectUrl = '/apps/dashboards/analytics';
+  settingsConfig.loginRedirectUrl = '/apps/dashboards/summary';
 
   const newUser = {
     from: 'custom-db',

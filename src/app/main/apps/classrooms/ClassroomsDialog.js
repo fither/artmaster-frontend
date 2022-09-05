@@ -7,11 +7,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Icon from '@mui/material/Icon';
-import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { WebSocketContext } from 'app/ws/WebSocket';
@@ -19,12 +18,24 @@ import { WebSocketContext } from 'app/ws/WebSocket';
 import _ from '@lodash';
 import * as yup from 'yup';
 
-import { Autocomplete, DialogContentText, DialogTitle, MenuItem } from '@mui/material';
-import { closeDialog, openDialog } from 'app/store/fuse/dialogSlice';
-import { Box } from '@mui/system';
-import { styled } from '@mui/material/styles';
+import {
+  DialogTitle,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
+import FuseLoading from '@fuse/core/FuseLoading';
 import { selectLocations } from '../locations/store/locationsSlice';
-import { closeClassroomDialog } from './store/classroomsSlice';
+import {
+  closeClassroomDialog,
+  openCustomerInfoDialog,
+  setCustomerInfoLoading,
+} from './store/classroomsSlice';
+import { selectClassroomAssignments, setClassroomAssignments } from './store/assignmentsSlice';
 
 const defaultValues = {
   name: '',
@@ -44,6 +55,7 @@ function ClassroomsDialog(props) {
     ({ classroomsApp }) => classroomsApp.classrooms.classroomDialog
   );
   const locations = useSelector(selectLocations);
+  const assignments = useSelector(selectClassroomAssignments);
   const ws = useContext(WebSocketContext);
 
   const { control, watch, reset, handleSubmit, formState, getValues } = useForm({
@@ -55,7 +67,9 @@ function ClassroomsDialog(props) {
   const { isValid, dirtyFields, errors } = formState;
 
   const initDialog = useCallback(() => {
+    dispatch(setClassroomAssignments([]));
     if (classroomDialog.type === 'edit' && classroomDialog.data) {
+      ws.sendMessage('assignment/findAllByClassroomId', classroomDialog.data.id);
       reset({ ...classroomDialog.data });
     }
 
@@ -65,7 +79,7 @@ function ClassroomsDialog(props) {
         ...classroomDialog.data,
       });
     }
-  }, [classroomDialog.data, classroomDialog.type, reset]);
+  }, [classroomDialog.data, classroomDialog.type, dispatch, reset, ws]);
 
   useEffect(() => {
     if (classroomDialog.props.open) {
@@ -89,6 +103,16 @@ function ClassroomsDialog(props) {
     closeComposeDialog();
   }
 
+  function getCustomerInfo({ customerId, countryCode }) {
+    if (!customerId || !countryCode) {
+      return;
+    }
+
+    dispatch(setCustomerInfoLoading(true));
+    dispatch(openCustomerInfoDialog(null));
+    ws.sendMessage('classroom/getCustomerInfo', { customerId, countryCode });
+  }
+
   return (
     <Dialog
       classes={{
@@ -97,7 +121,7 @@ function ClassroomsDialog(props) {
       {...classroomDialog.props}
       onClose={closeComposeDialog}
       fullWidth
-      maxWidth="sm"
+      maxWidth="md"
     >
       <AppBar position="static" elevation={0}>
         <Toolbar className="flex w-full">
@@ -112,80 +136,142 @@ function ClassroomsDialog(props) {
         className="flex flex-col md:overflow-hidden"
       >
         <DialogContent classes={{ root: 'p-24' }}>
-          <div className="flex">
-            <div className="min-w-48 pt-20">
-              <Icon color="action">account_circle</Icon>
-            </div>
-            <Controller
-              control={control}
-              name="name"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  className="mb-24"
-                  label="Name"
-                  id="name"
-                  error={!!errors.name}
-                  helperText={errors?.name?.message}
-                  variant="outlined"
-                  required
-                  fullWidth
+          <div
+            className={
+              assignments && assignments.length
+                ? 'grid grid-rows-2 grid-flow-col gap-4'
+                : 'grid grid-rows-1 grid-flow-col gap-4'
+            }
+          >
+            <div className="row-span-6">
+              <div className="flex">
+                <div className="min-w-48 pt-20">
+                  <Icon color="action">account_circle</Icon>
+                </div>
+                <Controller
+                  control={control}
+                  name="name"
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      className="mb-24"
+                      label="Name"
+                      id="name"
+                      error={!!errors.name}
+                      helperText={errors?.name?.message}
+                      variant="outlined"
+                      required
+                      fullWidth
+                    />
+                  )}
                 />
-              )}
-            />
-          </div>
+              </div>
 
-          <div className="flex">
-            <div className="min-w-48 pt-20">
-              <Icon color="action">account_circle</Icon>
-            </div>
-            <Controller
-              control={control}
-              name="quota"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  className="mb-24"
-                  label="Quota"
-                  id="quota"
-                  type="number"
-                  error={!!errors.quota}
-                  helperText={errors?.quota?.message}
-                  variant="outlined"
-                  required
-                  fullWidth
+              <div className="flex">
+                <div className="min-w-48 pt-20">
+                  <Icon color="action">account_circle</Icon>
+                </div>
+                <Controller
+                  control={control}
+                  name="quota"
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      className="mb-24"
+                      label="Quota"
+                      id="quota"
+                      type="number"
+                      error={!!errors.quota}
+                      helperText={errors?.quota?.message}
+                      variant="outlined"
+                      required
+                      fullWidth
+                    />
+                  )}
                 />
-              )}
-            />
-          </div>
+              </div>
 
-          <div className="flex">
-            <div className="min-w-48 pt-20">
-              <Icon color="action">flag</Icon>
+              <div className="flex">
+                <div className="min-w-48 pt-20">
+                  <Icon color="action">flag</Icon>
+                </div>
+                <Controller
+                  control={control}
+                  name="locationId"
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      className="mb-24"
+                      label="Location"
+                      id="locationId"
+                      error={!!errors.locationId}
+                      helperText={errors?.locationId?.message}
+                      variant="outlined"
+                      select
+                      fullWidth
+                    >
+                      {locations.map((location) => (
+                        <MenuItem key={location.id} value={location.id}>
+                          {location.className}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                />
+              </div>
             </div>
-            <Controller
-              control={control}
-              name="locationId"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  className="mb-24"
-                  label="Location"
-                  id="locationId"
-                  error={!!errors.locationId}
-                  helperText={errors?.locationId?.message}
-                  variant="outlined"
-                  select
-                  fullWidth
-                >
-                  {locations.map((location) => (
-                    <MenuItem key={location.id} value={location.id}>
-                      {location.className}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
+            <div className="row-span-6">
+              <TableContainer style={{ maxHeight: '227px' }}>
+                <Table stickyHeader className="grow overflow-x-auto">
+                  <TableHead>
+                    <TableRow className="h-56">
+                      <TableCell style={{ width: '50px' }} />
+                      <TableCell className="p-4" component="th" scope="row" align="left">
+                        <Typography variant="h6">Users in classroom</Typography>
+                        <Typography variant="subtitle1" style={{ fontSize: '8px' }}>
+                          images are representative
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        {classroomDialog.data && classroomDialog.data.assignmentsCount
+                          ? classroomDialog.data.assignmentsCount
+                          : ''}
+                        /
+                        {classroomDialog.data && classroomDialog.data.quota
+                          ? classroomDialog.data.quota
+                          : ''}
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {assignments.map((assignment) => (
+                      <TableRow
+                        className="h-56"
+                        key={assignment.id}
+                        style={{
+                          cursor:
+                            assignment.customerId && assignment.countryCode ? 'pointer' : 'initial',
+                        }}
+                        onClick={(ev) =>
+                          getCustomerInfo({
+                            customerId: assignment.customerId,
+                            countryCode: assignment.countryCode,
+                          })
+                        }
+                      >
+                        <TableCell className="p-4" component="th" scope="row">
+                          <Avatar className="avatar ltr:left-0 rtl:right-0 m-0 mx-32" src="" />
+                        </TableCell>
+                        <TableCell className="p-4" component="th" scope="row">
+                          {assignment.customerName}
+                        </TableCell>
+                        <TableCell />
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
           </div>
         </DialogContent>
 

@@ -5,6 +5,7 @@ import reducer from '../store';
 import AssignmentsHeader from './AssignedListHeader';
 import AssignmentsTable from './AssignedListTable';
 import AssignmentsToolbar from './AssignedListToolbar';
+import AssignmentDialog from './AssignedListDialog';
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
   '& .FusePageCarded-header': {
@@ -26,12 +27,15 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 
 function Assignments() {
   return (
-    <Root
-      header={<AssignmentsHeader />}
-      contentToolbar={<AssignmentsToolbar />}
-      content={<AssignmentsTable />}
-      innerScroll
-    />
+    <>
+      <Root
+        header={<AssignmentsHeader />}
+        contentToolbar={<AssignmentsToolbar />}
+        content={<AssignmentsTable />}
+        innerScroll
+      />
+      <AssignmentDialog />
+    </>
   );
 }
 

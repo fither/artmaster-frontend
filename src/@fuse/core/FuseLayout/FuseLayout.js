@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { matchRoutes, useLocation } from 'react-router-dom';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { alpha } from '@mui/material/styles';
-import { updateNavigationItem } from 'app/store/fuse/navigationSlice';
+import { removeNavigationItem, updateNavigationItem } from 'app/store/fuse/navigationSlice';
 
 const inputGlobalStyles = (
   <GlobalStyles
@@ -156,6 +156,12 @@ function FuseLayout(props) {
     setUnreadMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chat]);
+
+  useEffect(() => {
+    if (user.role && !['super-admin', 'country-admin', 'director'].includes(user.role.name)) {
+      dispatch(removeNavigationItem('users'));
+    }
+  }, [dispatch, user.role]);
 
   useDeepCompareEffect(() => {
     if (!_.isEqual(newSettings.current, settings)) {

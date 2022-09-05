@@ -11,7 +11,7 @@ const settingsConfig = {
     toolbar: 'mainThemeLight',
     footer: 'mainThemeDark',
   },
-  loginRedirectUrl: '/apps/dashboards/analytics', // Default redirect url for the logged-in user
+  loginRedirectUrl: '/apps/dashboards/summary', // Default redirect url for the logged-in user
 };
 
 export default settingsConfig;

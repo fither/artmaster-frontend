@@ -27,8 +27,10 @@ function Widget2(props) {
         className="p-20 pt-0 h-56 flex justify-center items-end text-13 font-medium"
         color="textSecondary"
       >
-        <span className="truncate">{props.widget.data.extra.name}</span>:
-        <b className="px-8">{props.widget.data.extra.count}</b>
+        {props.widget.data.extra.name && (
+          <span className="truncate">{props.widget.data.extra.name}:</span>
+        )}
+        <b className="px-8 truncate">{props.widget.data.extra.count}</b>
       </Typography>
     </Paper>
   );

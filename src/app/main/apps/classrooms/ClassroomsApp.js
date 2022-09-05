@@ -11,6 +11,7 @@ import reducer from './store';
 import { setClassroomsLoading } from './store/classroomsSlice';
 import ClassroomsToolbar from './ClassroomsToolbar';
 import ClassroomsDialog from './ClassroomsDialog';
+import CustomerInfoDialog from './CustomerInfoDialog';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   '& .FusePageSimple-header': {
@@ -66,6 +67,7 @@ function ClassroomsApp(props) {
       />
       <ClassroomsAssignDialog />
       <ClassroomsDialog />
+      <CustomerInfoDialog />
     </>
   );
 }

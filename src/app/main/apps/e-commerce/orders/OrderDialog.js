@@ -74,7 +74,7 @@ function OrderDialog(props) {
     if (ordersDialog.type === 'new') {
       ws.sendMessage('assignment/add', data);
     } else {
-      ws.sendMessage('updateAppointment', data);
+      ws.sendMessage('assignment/update', data);
     }
     closeComposeDialog();
   }

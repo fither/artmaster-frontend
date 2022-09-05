@@ -1,7 +1,9 @@
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import withReducer from 'app/store/withReducer';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { styled } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import UsersDialog from './UserDialog';
 import UsersHeader from './UsersHeader';
 import UsersList from './UsersList';
@@ -40,8 +42,16 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
 function UsersApp(props) {
   const pageLayout = useRef(null);
+  const user = useSelector(({ auth }) => auth.user);
+  const navigate = useNavigate();
 
-  // TODO: superuser != -> disable sidebar
+  useEffect(() => {
+    if (user.role && !['super-admin', 'country-admin', 'director'].includes(user.role.name)) {
+      navigate({
+        pathname: '/',
+      });
+    }
+  }, [navigate, props, user.role]);
 
   return (
     <>

@@ -26,17 +26,40 @@ const assignmentSlice = createSlice({
       },
       prepare: (event) => ({ payload: event.target.value || '' }),
     },
-    setAssignments: (state, data) => {
-      assignmentsAdapter.setAll(state, data.payload);
+    setAssignments: (state, action) => {
+      assignmentsAdapter.setAll(state, action.payload);
       state.loading = false;
     },
-    setAssignmentsLoading: (state, data) => {
-      state.loading = data.payload;
+    updateAssignment: (state, action) => {
+      assignmentsAdapter.upsertOne(state, action.payload);
+    },
+    setAssignmentsLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    openEditAssignmentDialog: (state, action) => {
+      state.assignmentDialog = {
+        type: 'edit',
+        props: { open: true },
+        data: action.payload,
+      };
+    },
+    closeAssignmentDialog: (state, action) => {
+      state.assignmentDialog = {
+        type: 'new',
+        props: { open: false },
+        data: null,
+      };
     },
   },
 });
 
-export const { setAssignments, setAssignmentsLoading, setAssignmentsSearchText } =
-  assignmentSlice.actions;
+export const {
+  setAssignments,
+  setAssignmentsLoading,
+  setAssignmentsSearchText,
+  updateAssignment,
+  openEditAssignmentDialog,
+  closeAssignmentDialog,
+} = assignmentSlice.actions;
 
 export default assignmentSlice.reducer;

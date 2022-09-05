@@ -29,8 +29,6 @@ const prepareUser = (ws) => {
   ws.sendMessage('country/findAvailable');
   ws.sendMessage('role/findAll');
   ws.sendMessage('label/findAll');
-  ws.sendMessage('location/findAll');
-  // ws.sendMessage('analytics/findAll');
 };
 
 export default handleAuth;

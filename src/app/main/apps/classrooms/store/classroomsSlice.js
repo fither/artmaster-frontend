@@ -17,6 +17,11 @@ const classroomsSlice = createSlice({
       },
       data: null,
     },
+    customerInfoDialog: {
+      props: { open: false },
+      data: null,
+    },
+    customerInfoLoading: false,
   }),
   reducers: {
     setClassroomsSearchText: {
@@ -60,6 +65,25 @@ const classroomsSlice = createSlice({
     setClassroomsLoading: (state, action) => {
       state.loading = action.payload;
     },
+    openCustomerInfoDialog: (state, action) => {
+      state.customerInfoDialog = {
+        props: {
+          open: true,
+        },
+        data: action.payload,
+      };
+    },
+    closeCustomerInfoDialog: (state, action) => {
+      state.customerInfoDialog = {
+        props: {
+          open: false,
+        },
+        data: null,
+      };
+    },
+    setCustomerInfoLoading: (state, action) => {
+      state.customerInfoLoading = action.payload;
+    },
   },
   extraReducers: {},
 });
@@ -74,6 +98,9 @@ export const {
   openNewClassroomDialog,
   openEditClassroomDialog,
   closeClassroomDialog,
+  openCustomerInfoDialog,
+  closeCustomerInfoDialog,
+  setCustomerInfoLoading,
 } = classroomsSlice.actions;
 
 export default classroomsSlice.reducer;

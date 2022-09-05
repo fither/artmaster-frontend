@@ -88,6 +88,11 @@ function ClassroomsList(props) {
         accessor: 'quota',
         className: 'justify-center',
         sortable: true,
+        Cell: ({ row }) => (
+          <>
+            {row.original.assignmentsCount} / {row.original.quota}
+          </>
+        ),
       },
       {
         Header: 'Location',
@@ -101,9 +106,9 @@ function ClassroomsList(props) {
         sortable: false,
         Cell: ({ row }) => (
           <div className="flex items-center">
-            <IconButton onClick={(ev) => handleAssignClassroom(ev, row.original.id)}>
+            {/* <IconButton onClick={(ev) => handleAssignClassroom(ev, row.original.id)}>
               <Icon>edit</Icon>
-            </IconButton>
+            </IconButton> */}
             <IconButton onClick={(ev) => handleRemove(ev, row.original.id)} size="large">
               <Icon>delete</Icon>
             </IconButton>

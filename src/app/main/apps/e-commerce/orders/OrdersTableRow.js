@@ -59,7 +59,7 @@ function OrdersTableRow(props) {
 
         <TableCell className="p-4 md:p-16" component="th" scope="row">
           {props.order.bookingDate && props.order.bookingDate !== '-'
-            ? new Date(props.order.bookingDate).toLocaleString()
+            ? new Date(props.order.bookingDate.slice(0, 16)).toLocaleString()
             : '-'}
         </TableCell>
 

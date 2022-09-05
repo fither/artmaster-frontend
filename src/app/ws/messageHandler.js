@@ -18,6 +18,7 @@ import handleMail from './handlers/mail';
 import handleLog from './handlers/log';
 import handleClassroom from './handlers/classroom';
 import handleError from './handlers/error';
+import handleAnalytics from './handlers/analytics';
 
 const handleMessage = (handlePayload) => {
   switch (handlePayload.eventRoot) {
@@ -77,6 +78,9 @@ const handleMessage = (handlePayload) => {
       break;
     case 'classroom':
       handleClassroom(handlePayload);
+      break;
+    case 'analytics':
+      handleAnalytics(handlePayload);
       break;
     case 'error':
       handleError(handlePayload);

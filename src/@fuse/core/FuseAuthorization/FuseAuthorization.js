@@ -14,7 +14,7 @@ class FuseAuthorization extends Component {
       accessGranted: true,
       routes,
     };
-    this.defaultLoginRedirectUrl = settingsConfig.loginRedirectUrl || '/apps/dashboards/analytics';
+    this.defaultLoginRedirectUrl = settingsConfig.loginRedirectUrl || '/apps/dashboards/summary';
   }
 
   componentDidMount() {

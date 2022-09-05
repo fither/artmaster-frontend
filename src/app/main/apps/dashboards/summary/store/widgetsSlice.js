@@ -1,3 +1,5 @@
+/* eslint-disable no-loop-func */
+/* eslint-disable no-restricted-syntax */
 import { createEntityAdapter, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import baseWidgets from './baseWidgets';
@@ -135,13 +137,193 @@ export const generateWeatherWidget = (weather) => {
 
 const widgetsAdapter = createEntityAdapter({});
 
+export const getWidgetObjects = (analyticsData) => {
+  const mostSelledProductsByDate = {
+    id: 'mostSelledWidget',
+    ranges: [],
+    currentRange: '',
+    data: {
+      name: 'Total Selling',
+      count: {},
+      extra: {
+        name: 'Product',
+        count: {},
+      },
+    },
+  };
+
+  for (const [createDate, productInfo] of Object.entries(analyticsData.productsByCreateDate)) {
+    mostSelledProductsByDate.ranges[createDate] = createDate;
+    mostSelledProductsByDate.data.count[createDate] = productInfo.quantity;
+    mostSelledProductsByDate.data.extra.count[createDate] = productInfo.productName;
+    if (!mostSelledProductsByDate.currentRange) {
+      mostSelledProductsByDate.currentRange = createDate;
+    }
+  }
+
+  const mostBookingDateWidget = {
+    id: 'mostBookingDate',
+    title: 'Most Booking Date',
+    data: {
+      name: 'Booking Count',
+      count: 0,
+      extra: {
+        name: 'Date',
+        count: '',
+      },
+    },
+  };
+
+  for (const [date, times] of Object.entries(analyticsData.mostOrderedDate)) {
+    let totalQuantity = 0;
+    for (const [time, products] of Object.entries(times)) {
+      products.forEach((product) => {
+        totalQuantity += product.quantity;
+      });
+    }
+    mostBookingDateWidget.data.count = totalQuantity;
+    mostBookingDateWidget.data.extra.count = date;
+  }
+
+  const mostBookingTimeWidget = {
+    id: 'mostBookingTime',
+    title: 'Most Booking Session',
+    data: {
+      name: 'Booking Count',
+      count: 0,
+      extra: {
+        name: 'Time',
+        count: '',
+      },
+    },
+  };
+
+  for (const [time, products] of Object.entries(analyticsData.mostOrderedTime)) {
+    let totalQuantity = 0;
+    products.forEach((product) => {
+      totalQuantity += product.quantity;
+    });
+    mostBookingTimeWidget.data.count = totalQuantity;
+    mostBookingTimeWidget.data.extra.count = `${time} of days`;
+  }
+
+  const todaysBookingsWidget = {
+    id: 'todaysBookingsWidget',
+    title: 'Todays Bookings',
+    data: {
+      name: 'Booking Count',
+      count: 0,
+      extra: {
+        name: 'Today',
+        count: 0,
+      },
+    },
+  };
+
+  for (const [date, times] of Object.entries(analyticsData.todaysBookings)) {
+    let totalQuantity = 0;
+    for (const [time, products] of Object.entries(times)) {
+      products.forEach((product) => {
+        totalQuantity += product.quantity;
+      });
+    }
+    todaysBookingsWidget.data.count = totalQuantity;
+    todaysBookingsWidget.data.extra.count = date;
+  }
+
+  const last30DaysBookingsWidget = {
+    id: 'last30DaysBookingsWidget',
+    title: "Last 30 Day's Bookings",
+    data: {
+      name: 'Booking Count',
+      count: analyticsData.last30DaysBookings,
+      extra: {
+        name: '',
+        count: '',
+      },
+    },
+  };
+
+  const last30DaysProductsWidget = {
+    id: 'last30DaysProductsWidget',
+    title: "Last 30 Day's Products",
+    data: {
+      name: 'Sell Count',
+      count: analyticsData.last30DaysProducts,
+      extra: {
+        name: '',
+        count: '',
+      },
+    },
+  };
+
+  const productSellings = {
+    id: 'productSellings',
+    title: 'Product Sellings',
+    table: {
+      columns: [
+        {
+          id: 'productName',
+          title: 'Product Name',
+        },
+        {
+          id: 'quantity',
+          title: 'Quantity',
+        },
+      ],
+      rows: [
+        ...Object.values(analyticsData.productSellings).map((product, index) => {
+          return {
+            id: index + 1,
+            cells: [
+              {
+                id: 'productName',
+                value: product.productName,
+                classes: 'text-white',
+                icon: '',
+              },
+              {
+                id: 'quantity',
+                value: product.quantity,
+                classes: 'font-semibold',
+                icon: '',
+              },
+            ],
+          };
+        }),
+      ],
+    },
+  };
+
+  return [
+    mostSelledProductsByDate,
+    mostBookingDateWidget,
+    mostBookingTimeWidget,
+    todaysBookingsWidget,
+    last30DaysBookingsWidget,
+    last30DaysProductsWidget,
+    productSellings,
+  ];
+};
+
 export const { selectEntities: selectWidgets, selectById: selectWidgetById } =
   widgetsAdapter.getSelectors((state) => state.summaryDashboardApp.widgets);
 
 const widgetsSlice = createSlice({
   name: 'summaryDashboardApp/widgets',
-  initialState: widgetsAdapter.getInitialState(),
-  reducers: {},
+  initialState: widgetsAdapter.getInitialState({
+    loading: false,
+  }),
+  reducers: {
+    addWidget: (state, action) => {
+      const widgetObject = getWidgetObjects(action.payload);
+      widgetsAdapter.upsertMany(state, widgetObject);
+      state.loading = false;
+    },
+    setWidgetsLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+  },
   extraReducers: {
     [getWidgets.fulfilled]: widgetsAdapter.setAll,
     [getWidgets.rejected]: (state, data) => {
@@ -150,5 +332,7 @@ const widgetsSlice = createSlice({
     [getWeather.fulfilled]: widgetsAdapter.upsertOne,
   },
 });
+
+export const { addWidget, setWidgetsLoading } = widgetsSlice.actions;
 
 export default widgetsSlice.reducer;

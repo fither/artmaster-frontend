@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import Icon from '@mui/material/Icon';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useCallback, useContext, useEffect } from 'react';
@@ -14,16 +13,15 @@ import { WebSocketContext } from 'app/ws/WebSocket';
 
 import _ from '@lodash';
 import * as yup from 'yup';
-import { MenuItem, TextField } from '@mui/material';
-import { selectLocations } from '../../locations/store/locationsSlice';
+import { FormControl, TextField } from '@mui/material';
+import { closeAssignmentDialog } from '../store/assignmentsSlice';
 
 const defaultValues = {
-  locationId: '',
-  assignmentIds: [],
+  note: '',
 };
 
 const schema = yup.object().shape({
-  locationId: yup.string().required('You must select a location'),
+  note: yup.string(),
 });
 
 function AssignmentDialog(props) {
@@ -31,7 +29,6 @@ function AssignmentDialog(props) {
     ({ eCommerceApp }) => eCommerceApp.assignments.assignmentDialog
   );
   const dispatch = useDispatch();
-  const locations = useSelector(selectLocations);
   const ws = useContext(WebSocketContext);
 
   const { control, watch, reset, handleSubmit, formState, getValues } = useForm({
@@ -42,15 +39,18 @@ function AssignmentDialog(props) {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  const locationId = watch('locationId');
-
   const initDialog = useCallback(() => {
     if (assignmentsDialog.data) {
-      reset({ ...assignmentsDialog.data });
+      reset({
+        ...assignmentsDialog.data,
+        note: assignmentsDialog.data.note || '',
+      });
     }
   }, [assignmentsDialog.data, reset]);
 
-  function closeComposeDialog() {}
+  function closeComposeDialog() {
+    dispatch(closeAssignmentDialog());
+  }
 
   useEffect(() => {
     if (assignmentsDialog.props.open) {
@@ -60,9 +60,9 @@ function AssignmentDialog(props) {
 
   function onSubmit(data) {
     if (assignmentsDialog.type === 'new') {
-      ws.sendMessage('appointment/add', data);
+      ws.sendMessage('assignment/add', data);
     } else {
-      ws.sendMessage('updateAppointment', data);
+      ws.sendMessage('assignment/update', data);
     }
     closeComposeDialog();
   }
@@ -80,7 +80,7 @@ function AssignmentDialog(props) {
       <AppBar position="static" elevation={0}>
         <Toolbar className="flex w-full">
           <Typography variant="subtitle1" color="inherit">
-            Assign Assignment/s
+            Assignment Edit
           </Typography>
         </Toolbar>
       </AppBar>
@@ -90,33 +90,16 @@ function AssignmentDialog(props) {
         className="flex flex-col md:overflow-hidden"
       >
         <DialogContent classes={{ root: 'pb-24' }}>
-          <div className="flex">
-            <div className="min-w-48 pt-20">
-              <Icon color="action">account_circle</Icon>
-            </div>
-            <Controller
-              control={control}
-              name="locationId"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  className="mb-24"
-                  label="Location"
-                  id="locationId"
-                  variant="outlined"
-                  select
-                  fullWidth
-                >
-                  {locations.map((location) => {
-                    return (
-                      <MenuItem key={location.id} value={location.id}>
-                        {location.className}
-                      </MenuItem>
-                    );
-                  })}
-                </TextField>
-              )}
-            />
+          <div className="px-16 sm:px-24">
+            <FormControl className="mt-8 mb-16" required fullWidth>
+              <Controller
+                name="note"
+                control={control}
+                render={({ field }) => (
+                  <TextField {...field} label="Note" multiline rows="6" variant="outlined" />
+                )}
+              />
+            </FormControl>
           </div>
         </DialogContent>
 

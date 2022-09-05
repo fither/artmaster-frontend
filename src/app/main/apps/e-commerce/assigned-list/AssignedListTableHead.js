@@ -33,10 +33,10 @@ const rows = [
     sort: true,
   },
   {
-    id: 'order-id',
+    id: 'done',
     align: 'left',
     disablePadding: false,
-    label: 'Order ID',
+    label: 'Done',
     sort: true,
   },
   {
@@ -44,6 +44,13 @@ const rows = [
     align: 'left',
     disablePadding: false,
     label: 'Product Name',
+    sort: true,
+  },
+  {
+    id: 'booking-date',
+    align: 'left',
+    disablePadding: false,
+    label: 'Booking Date',
     sort: true,
   },
   {
@@ -58,6 +65,13 @@ const rows = [
     align: 'left',
     disablePadding: false,
     label: 'Class Name',
+    sort: true,
+  },
+  {
+    id: 'flagged',
+    align: 'left',
+    disablePAdding: false,
+    label: 'Flagged',
     sort: true,
   },
 ];

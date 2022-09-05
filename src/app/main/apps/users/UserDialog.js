@@ -53,6 +53,8 @@ function UserDialog(props) {
   const user = useSelector(({ auth }) => auth.user);
   const roles = useSelector(selectRoles);
   const countries = useSelector(selectCountries);
+  const availableCountries = useSelector(({ usersApp }) => usersApp.countries.availableCountries);
+  const [filteredCountries, setFilteredCountries] = useState([]);
   const locations = useSelector(selectLocations);
   const ws = useContext(WebSocketContext);
 
@@ -71,6 +73,14 @@ function UserDialog(props) {
   const avatar = watch('photo_url');
   const selectedCountryIds = watch('countryIds');
   const selectedRoleId = watch('roleId');
+
+  useEffect(() => {
+    if (Object.keys(availableCountries).length) {
+      setFilteredCountries(countries.filter((c) => availableCountries[c.code] === ''));
+    } else {
+      setFilteredCountries(countries);
+    }
+  }, [availableCountries, countries]);
 
   useEffect(() => {
     const selectedCountryIdsLength = selectedCountryIds.length;
@@ -365,7 +375,7 @@ function UserDialog(props) {
                 <Autocomplete
                   id="countryIds"
                   className="mb-24"
-                  options={user.role.name === 'super-admin' ? countries : user.countries}
+                  options={user.role.name === 'super-admin' ? filteredCountries : user.countries}
                   autoHighlight
                   fullWidth
                   multiple
